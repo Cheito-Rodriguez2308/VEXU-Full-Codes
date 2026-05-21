@@ -1,6 +1,6 @@
 # LemLib Path Files
 
-Use `path.jerryio.com` to create paths for this project.
+Use `path.jerryio.com` to create paths for this code.
 
 - Select LemLib format.
 - Save `.txt` files into `static/paths`.

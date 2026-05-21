@@ -1,6 +1,6 @@
 # Style Notes
 
-This code should survive a rushed tournament day. Prefer boring, readable code
+We want code that survives a rushed tournament day. Prefer boring, readable code
 over clever patterns.
 
 ## Naming

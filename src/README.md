@@ -1,7 +1,7 @@
 # Source Files
 
-This folder mirrors `include/`. If a header tells you what a class can do, the
-matching source file should show how it does it.
+This folder mirrors `include/`. If a header tells us what a class can do, the
+matching source file shows how it does it.
 
 Rules we try to keep:
 

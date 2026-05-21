@@ -2,8 +2,8 @@
 
 PROS C++ + LemLib code for our VEX U Override robots.
 
-This branch is for testing and cleanup. Some values are still marked `TODO`
-because they need to be measured on the actual robot before serious driving.
+We use this branch for testing and cleanup. Some values are still marked `TODO`
+because we need to measure them on the actual robot before serious driving.
 
 ## Code Map
 
@@ -30,13 +30,13 @@ core::Robot
     +-- util/         Logging, timers, small math helpers
 ```
 
-The project is laid out so a new programmer can answer two questions quickly:
-who owns this device, and who is allowed to command it?
+We want the layout to answer two questions quickly: who owns this device, and
+who is allowed to command it?
 
 ## New Programmer Setup
 
 1. Install PROS for VS Code or the PROS CLI.
-2. Clone the repository.
+2. Clone this repo.
 3. Build once before editing so toolchain issues are separate from code issues.
 4. Read `include/config/README.md`, then `include/core/README.md`.
 5. Replace only one category of `TODO` values at a time.
@@ -48,7 +48,10 @@ who owns this device, and who is allowed to command it?
 - `testing` is where we try real hardware values and route ideas.
 - Merge back to `main` only when the code is clean, documented, and explainable.
 
-## Values that must be replaced before real robot testing
+## Values To Recheck For This Season
+
+Several starting values came from our Push Back robot. Treat them as a starting
+point only; verify them on the current Override build before trusting auton.
 
 - All motor ports and reversed signs.
 - Gear cartridges and external drive gear ratios.

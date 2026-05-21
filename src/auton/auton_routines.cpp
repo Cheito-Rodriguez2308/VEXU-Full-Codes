@@ -55,7 +55,7 @@ void skillsRoute(AutonActions& actions) {
 }
 
 void doNothing(AutonActions&) {
-    // Intentional safe option for field setup and first bring-up.
+    // Safe option for field setup and quick checks.
 }
 
 } // namespace auton

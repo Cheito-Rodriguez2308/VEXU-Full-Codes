@@ -1,7 +1,8 @@
 # Project Audit Notes
 
-This repository is VEX U PROS C++ and LemLib code that is still in bring-up.
-It is not final competition code.
+This is our VEX U PROS C++ and LemLib code for the Override season.
+Some values started from the Push Back robot, so we are checking and revising
+them on the current build.
 
 ## Critical Issues Checked
 
@@ -19,11 +20,17 @@ It is not final competition code.
   AutonActions, tuning modules, Logger, and config.
 - Robot A and Robot B share config types instead of duplicated code.
 
-## Incomplete By Design
+## Needs Rechecking For Override
 
-- Hardware ports, drivetrain measurements, PID constants, motion limits, and autonomous coordinates remain `TODO`.
-- Path files in `static/paths` are examples and must be replaced with LemLib path files.
-- Possession estimation uses placeholder thresholds and must be tuned with real sensors.
+- A lot of starting values came from the Push Back robot, so we need to verify
+  ports, drivetrain measurements, PID constants, and motion limits on the
+  current Override build.
+- Autonomous coordinates are not season-ready until we check them against the
+  actual field setup and starting positions.
+- Path files in `static/paths` need to be regenerated or retested in LemLib
+  format for this robot.
+- Possession estimates need a real sensor pass once the intake and object
+  guides are mounted for this season.
 
 ## Validation
 
@@ -32,7 +39,6 @@ It is not final competition code.
 
 ## Reference Comparison
 
-The AON Push Back repository uses clear folder grouping and concise folder-level
-READMEs for orientation. The current LemLib layout stays in place, with
-team-facing notes so new programmers can understand each module before editing
-code.
+The AON Push Back repo uses clear folder grouping and short folder notes. We
+kept our LemLib layout in place and trimmed the notes down to what we can
+actually use before editing code.

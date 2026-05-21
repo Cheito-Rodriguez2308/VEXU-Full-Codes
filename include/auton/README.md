@@ -9,7 +9,7 @@ preload.
 - `auton_selector.hpp`: temporary controller selector.
 - `paths.hpp`: LemLib path assets from `static/paths`.
 
-Notes from bring-up:
+Notes while we recheck routes:
 
 - test one action at a time before linking routes
 - chained moves are great until odom is slightly off

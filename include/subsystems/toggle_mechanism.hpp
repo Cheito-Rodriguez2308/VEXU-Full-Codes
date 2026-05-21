@@ -1,7 +1,7 @@
 #pragma once
 
 // ToggleMechanism models color/field-object toggling as named states.
-// State names can change after the team validates the real mechanism.
+// State names can change after we validate the real mechanism.
 
 #include "pros/motors.hpp"
 #include "util/logger.hpp"

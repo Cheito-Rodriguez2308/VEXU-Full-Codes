@@ -1,6 +1,6 @@
 #pragma once
 
-// DriveTuning contains repeatable tests, not final autonomous routes.
+// DriveTuning contains repeatable tests, not autonomous routes.
 // Run one test at a time on blocks first, then on the field.
 
 namespace subsystems {
