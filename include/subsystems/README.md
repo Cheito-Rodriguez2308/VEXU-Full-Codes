@@ -3,8 +3,6 @@
 Subsystems model real mechanisms as small classes with state machines. Driver
 control and auton request states; the subsystem decides what the hardware does.
 
-Files:
-
 - `drivetrain.hpp`: LemLib chassis wrapper and motion API.
 - `intake.hpp`: intake state machine.
 - `pin_mechanism.hpp`: pin manipulator state machine.
@@ -12,20 +10,11 @@ Files:
 - `toggle_mechanism.hpp`: toggle mechanism state machine.
 - `sensors.hpp`: possession and sensor facade.
 
-What belongs here:
+Working rule: subsystems should be boring to call. The messy stuff belongs
+inside the mechanism file where it can be tested without touching driver code.
 
-- Own hardware objects.
-- Expose `initialize()`, `update()`, `stop()`, `setState()`, and `debug()`.
-- Convert requested states into motor/pneumatic behavior.
+Things that usually change late:
 
-Usually changed after mechanism testing:
-
-- State names when real mechanism behavior is clearer.
-- Motor voltages and pneumatic behavior after testing.
-- Sensor thresholds for possession guards.
-
-Common mistakes:
-
-- Reading controller buttons inside subsystems.
-- Adding final autonomous decisions inside subsystem classes.
-- Skipping safety states like `Off`, `Idle`, or `Hold`.
+- hold voltages after the robot gets heavier
+- pneumatic timing after tubing is rerouted
+- possession thresholds once the intake is rebuilt

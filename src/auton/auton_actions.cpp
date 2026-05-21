@@ -48,21 +48,21 @@ void AutonActions::followPath(const char* name, const asset& path, double lookah
 void AutonActions::scorePin() {
     logger.autonStep("scorePin");
     pin.setState(subsystems::PinMechanismState::Score);
-    pros::delay(350); // TODO: mechanism timing.
+    pros::delay(350); // TODO: replace with measured score timing.
     sensors.setHasPin(false);
 }
 
 void AutonActions::scoreCup() {
     logger.autonStep("scoreCup");
     cup.setState(subsystems::CupMechanismState::Stack);
-    pros::delay(350); // TODO: mechanism timing.
+    pros::delay(350); // TODO: retest with a loaded cup.
     sensors.setHasCup(false);
 }
 
 void AutonActions::setToggle(subsystems::ToggleMechanismState state) {
     logger.autonStep("setToggle");
     toggle.setState(state);
-    pros::delay(250); // TODO: timing.
+    pros::delay(250); // TODO: temporary timing until the toggle is on the robot.
 }
 
 void AutonActions::waitForSensor(const char* name, int timeoutMs) {
@@ -86,20 +86,20 @@ void AutonActions::cancelMotionIf(bool condition, const char* reason) {
 
 void AutonActions::chainAroundGoal() {
     // Use this only after single motions are predictable.
-    // TODO: replace these coordinates with a tested goal-side lane.
+    // The chained version saves time but hides small pose errors.
     driveToPoint("chain entry", 18.0, 12.0, 1800, {.minSpeed = 45, .earlyExitRange = 8});
     driveToPose("chain exit", 28.0, 28.0, 90.0, 2200, {.minSpeed = 35, .earlyExitRange = 6});
 }
 
 void AutonActions::approachAndScore() {
-    // TODO: replace with a scoring pose that leaves room for Robot B.
+    // Leave room for the partner robot; tighter poses can wait until both robots are mapped.
     driveToPose("approach scoring zone", 36.0, 14.0, 0.0, config::timing::defaultMotionTimeoutMs);
     scoreCup();
 }
 
 void AutonActions::intakeUntilDetected() {
     intake.setState(subsystems::IntakeState::IntakeCup);
-    // TODO: tune maxSpeed so the intake has time to pull the object in.
+    // Slower than route speed so the intake has time to actually grab.
     drivetrain.moveToPoint("intake lane", 24.0, 8.0, 2500, {.maxSpeed = 70}, true);
     waitForSensor("wait for possession", 1500);
     cancelMotionIf(sensors.possession().hasCup, "Possession detected; canceling intake motion");

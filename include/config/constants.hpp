@@ -2,38 +2,26 @@
 
 namespace config {
 
-/**
- * @brief Loop timing used by PROS tasks.
- * Change these only if updates feel slow or the brain screen gets noisy.
- */
+// Loop timing. Driver loop matches the usual 20 ms control rhythm.
 namespace timing {
 constexpr int driverLoopMs = 20;
 constexpr int dashboardLoopMs = 100;
 constexpr int defaultMotionTimeoutMs = 2500;
 }
 
-/**
- * @brief Warnings shown to drivers during testing.
- * Retest these thresholds once the robot has its final drive motors.
- */
+// Driver warnings. Retest these once the final drive is installed.
 namespace safety {
-constexpr double hotMotorCelsius = 55.0; // TODO: motor temperature warning.
-constexpr double lowBatteryVolts = 11.8; // TODO: battery warning threshold.
+constexpr double hotMotorCelsius = 55.0; // TODO: warning threshold.
+constexpr double lowBatteryVolts = 11.8; // TODO: adjust after battery testing.
 }
 
-/**
- * @brief Sensor thresholds used for possession estimates.
- * These should be measured with real game objects before matches.
- */
+// Possession estimates. Do not trust these until tested with real objects.
 namespace sensors {
-constexpr int opticalLedPercent = 50; // TODO: optical brightness for bench testing.
-constexpr int possessionDistanceMm = 80; // TODO: distance threshold for possession estimates.
+constexpr int opticalLedPercent = 50; // TODO: bench-test brightness.
+constexpr int possessionDistanceMm = 80; // TODO: cup/pin distance threshold.
 }
 
-/**
- * @brief Normal mechanism voltages.
- * Keep these conservative until the mechanisms are tested under load.
- */
+// Mechanism voltages. Keep conservative until the intake has a full-load test.
 namespace mechanism {
 constexpr int intakeVoltage = 9000; // TODO: intake voltage.
 constexpr int outtakeVoltage = -9000; // TODO: outtake voltage.
@@ -44,10 +32,7 @@ constexpr int releaseVoltage = -4000; // TODO: manipulator release voltage.
 constexpr int toggleVoltage = 5000; // TODO: toggle mechanism voltage.
 }
 
-/**
- * @brief Repeatable tuning targets.
- * These are simple tests, not autonomous route coordinates.
- */
+// Tuning targets. These are test moves, not route coordinates.
 namespace tuning {
 constexpr double defaultLookahead = 12.0; // TODO: Pure Pursuit lookahead.
 constexpr int mechanismTestVoltage = 6000; // TODO: safe bench-test voltage.

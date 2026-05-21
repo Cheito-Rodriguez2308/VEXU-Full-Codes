@@ -1,39 +1,18 @@
 # Config Headers
 
-Start here when wiring, sensors, or tuning values change.
+Start here when wiring changes. Most competition-day fixes should begin in
+`ports.hpp` or `robot_config.hpp`, not buried in subsystem code.
 
-Main files:
+Current map:
 
 - `robot_identity.hpp`: selects Robot A or Robot B.
 - `ports.hpp`: groups motor, sensor, and ADI ports.
-- `robot_config.hpp`: groups drivetrain, tracking, and PID settings.
-- `constants.hpp`: named constants shared across the project.
+- `robot_config.hpp`: drivetrain geometry, tracking wheels, PID settings.
+- `constants.hpp`: shared voltages, timeouts, tuning test targets.
 
-What belongs here:
+Pit notes:
 
-- Centralize robot-specific values.
-- Mark every untested value with `TODO`.
-- Keep behavior out of config files.
-
-Config can reference PROS and LemLib types because those libraries define motor
-gearsets and controller settings. Keep the actual driving logic somewhere else.
-
-Change these first:
-
-- Ports, reversed motor signs, sensor ports.
-- Track width, wheel diameter, horizontal drift.
-- PID constants after tuning.
-
-Bring-up order:
-
-1. Verify ports and motor directions.
-2. Verify tracking wheel directions.
-3. Tune angular PID.
-4. Tune lateral PID.
-5. Tune slew and exit conditions.
-
-Common mistakes:
-
-- Copying values from another robot.
-- Changing PID before fixing sensor direction.
-- Forgetting that tracking wheel offset signs matter.
+- negative motor ports mean reversed
+- tracking wheel offset signs matter more than they look
+- do not tune PID to hide a bad wheel diameter
+- Robot A and Robot B may not end up with matching values
