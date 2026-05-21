@@ -1,6 +1,8 @@
 #pragma once
 
-namespace util { class Logger; }
+namespace util {
+class Logger;
+}
 
 namespace tuning {
 

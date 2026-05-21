@@ -21,12 +21,37 @@ class AutonActions {
                  subsystems::ToggleMechanism& toggle, subsystems::Sensors& sensors,
                  util::Logger& logger);
 
-    void driveToPoint(const char* name, double x, double y, int timeout, lemlib::MoveToPointParams params = {});
-    void driveToPose(const char* name, double x, double y, double theta, int timeout, lemlib::MoveToPoseParams params = {});
-    void turnToHeading(const char* name, double heading, int timeout, lemlib::TurnToHeadingParams params = {});
-    void turnToPoint(const char* name, double x, double y, int timeout, lemlib::TurnToPointParams params = {});
-    void swingToHeading(const char* name, double heading, lemlib::DriveSide side, int timeout, lemlib::SwingToHeadingParams params = {});
-    void swingToPoint(const char* name, double x, double y, lemlib::DriveSide side, int timeout, lemlib::SwingToPointParams params = {});
+    void driveToPoint(const char* name,
+                      double x,
+                      double y,
+                      int timeout,
+                      lemlib::MoveToPointParams params = {});
+    void driveToPose(const char* name,
+                     double x,
+                     double y,
+                     double theta,
+                     int timeout,
+                     lemlib::MoveToPoseParams params = {});
+    void turnToHeading(const char* name,
+                       double heading,
+                       int timeout,
+                       lemlib::TurnToHeadingParams params = {});
+    void turnToPoint(const char* name,
+                     double x,
+                     double y,
+                     int timeout,
+                     lemlib::TurnToPointParams params = {});
+    void swingToHeading(const char* name,
+                        double heading,
+                        lemlib::DriveSide side,
+                        int timeout,
+                        lemlib::SwingToHeadingParams params = {});
+    void swingToPoint(const char* name,
+                      double x,
+                      double y,
+                      lemlib::DriveSide side,
+                      int timeout,
+                      lemlib::SwingToPointParams params = {});
     void followPath(const char* name, const asset& path, double lookahead, int timeout, bool forwards);
     void scorePin();
     void scoreCup();

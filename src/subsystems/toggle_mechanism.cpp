@@ -5,11 +5,16 @@ namespace subsystems {
 
 const char* toString(ToggleMechanismState state) {
     switch (state) {
-    case ToggleMechanismState::Idle: return "Idle";
-    case ToggleMechanismState::SetRed: return "Set Red";
-    case ToggleMechanismState::SetBlue: return "Set Blue";
-    case ToggleMechanismState::SetYellow: return "Set Yellow";
-    case ToggleMechanismState::Retract: return "Retract";
+    case ToggleMechanismState::Idle:
+        return "Idle";
+    case ToggleMechanismState::SetRed:
+        return "Set Red";
+    case ToggleMechanismState::SetBlue:
+        return "Set Blue";
+    case ToggleMechanismState::SetYellow:
+        return "Set Yellow";
+    case ToggleMechanismState::Retract:
+        return "Retract";
     }
     return "Unknown";
 }

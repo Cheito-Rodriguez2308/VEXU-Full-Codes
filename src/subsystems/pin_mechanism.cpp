@@ -5,11 +5,16 @@ namespace subsystems {
 
 const char* toString(PinMechanismState state) {
     switch (state) {
-    case PinMechanismState::Idle: return "Idle";
-    case PinMechanismState::Grab: return "Grab";
-    case PinMechanismState::Hold: return "Hold";
-    case PinMechanismState::Score: return "Score";
-    case PinMechanismState::Release: return "Release";
+    case PinMechanismState::Idle:
+        return "Idle";
+    case PinMechanismState::Grab:
+        return "Grab";
+    case PinMechanismState::Hold:
+        return "Hold";
+    case PinMechanismState::Score:
+        return "Score";
+    case PinMechanismState::Release:
+        return "Release";
     }
     return "Unknown";
 }

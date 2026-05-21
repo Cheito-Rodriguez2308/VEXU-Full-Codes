@@ -16,16 +16,30 @@ void TuningMenu::update() {
         controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
         setEnabled(!tuningEnabled);
     }
-    if (!tuningEnabled) return;
+    if (!tuningEnabled) {
+        return;
+    }
 
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) driveTuning.angular90();
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) driveTuning.forward24();
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) driveTuning.moveToPoseTest();
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) pidTuning.explainWorkflow();
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) sensorTuning.trackingWheelDirectionTest();
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
+        driveTuning.angular90();
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+        driveTuning.forward24();
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
+        driveTuning.moveToPoseTest();
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+        pidTuning.explainWorkflow();
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+        sensorTuning.trackingWheelDirectionTest();
+    }
 }
 
-bool TuningMenu::enabled() const { return tuningEnabled; }
+bool TuningMenu::enabled() const {
+    return tuningEnabled;
+}
 
 void TuningMenu::setEnabled(bool value) {
     tuningEnabled = value;

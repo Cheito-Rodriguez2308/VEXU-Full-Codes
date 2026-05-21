@@ -5,14 +5,22 @@ namespace auton {
 
 const char* toString(AutonRoutine routine) {
     switch (routine) {
-    case AutonRoutine::RedSafeAWP: return "Red Safe AWP";
-    case AutonRoutine::BlueSafeAWP: return "Blue Safe AWP";
-    case AutonRoutine::RedGoalStackPriority: return "Red Goal Stack";
-    case AutonRoutine::BlueGoalStackPriority: return "Blue Goal Stack";
-    case AutonRoutine::RedMidfieldPressure: return "Red Midfield";
-    case AutonRoutine::BlueMidfieldPressure: return "Blue Midfield";
-    case AutonRoutine::SkillsRoute: return "Skills";
-    case AutonRoutine::DoNothing: return "Do Nothing";
+    case AutonRoutine::RedSafeAWP:
+        return "Red Safe AWP";
+    case AutonRoutine::BlueSafeAWP:
+        return "Blue Safe AWP";
+    case AutonRoutine::RedGoalStackPriority:
+        return "Red Goal Stack";
+    case AutonRoutine::BlueGoalStackPriority:
+        return "Blue Goal Stack";
+    case AutonRoutine::RedMidfieldPressure:
+        return "Red Midfield";
+    case AutonRoutine::BlueMidfieldPressure:
+        return "Blue Midfield";
+    case AutonRoutine::SkillsRoute:
+        return "Skills";
+    case AutonRoutine::DoNothing:
+        return "Do Nothing";
     }
     return "Unknown";
 }
@@ -43,15 +51,32 @@ void AutonSelector::update() {
 
 void AutonSelector::runSelected() {
     logger.info(std::string("Running auton: ") + toString(selectedRoutine));
+
     switch (selectedRoutine) {
-    case AutonRoutine::RedSafeAWP: redSafeAWP(actions); break;
-    case AutonRoutine::BlueSafeAWP: blueSafeAWP(actions); break;
-    case AutonRoutine::RedGoalStackPriority: redGoalStackPriority(actions); break;
-    case AutonRoutine::BlueGoalStackPriority: blueGoalStackPriority(actions); break;
-    case AutonRoutine::RedMidfieldPressure: redMidfieldPressure(actions); break;
-    case AutonRoutine::BlueMidfieldPressure: blueMidfieldPressure(actions); break;
-    case AutonRoutine::SkillsRoute: skillsRoute(actions); break;
-    case AutonRoutine::DoNothing: doNothing(actions); break;
+    case AutonRoutine::RedSafeAWP:
+        redSafeAWP(actions);
+        break;
+    case AutonRoutine::BlueSafeAWP:
+        blueSafeAWP(actions);
+        break;
+    case AutonRoutine::RedGoalStackPriority:
+        redGoalStackPriority(actions);
+        break;
+    case AutonRoutine::BlueGoalStackPriority:
+        blueGoalStackPriority(actions);
+        break;
+    case AutonRoutine::RedMidfieldPressure:
+        redMidfieldPressure(actions);
+        break;
+    case AutonRoutine::BlueMidfieldPressure:
+        blueMidfieldPressure(actions);
+        break;
+    case AutonRoutine::SkillsRoute:
+        skillsRoute(actions);
+        break;
+    case AutonRoutine::DoNothing:
+        doNothing(actions);
+        break;
     }
 }
 

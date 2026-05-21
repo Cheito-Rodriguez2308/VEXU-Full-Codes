@@ -5,11 +5,16 @@ namespace subsystems {
 
 const char* toString(CupMechanismState state) {
     switch (state) {
-    case CupMechanismState::Idle: return "Idle";
-    case CupMechanismState::Grab: return "Grab";
-    case CupMechanismState::Hold: return "Hold";
-    case CupMechanismState::Stack: return "Stack";
-    case CupMechanismState::Release: return "Release";
+    case CupMechanismState::Idle:
+        return "Idle";
+    case CupMechanismState::Grab:
+        return "Grab";
+    case CupMechanismState::Hold:
+        return "Hold";
+    case CupMechanismState::Stack:
+        return "Stack";
+    case CupMechanismState::Release:
+        return "Release";
     }
     return "Unknown";
 }

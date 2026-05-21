@@ -12,7 +12,7 @@ void Sensors::initialize() {
 }
 
 void Sensors::update() {
-    // TODO: replace this with conditions from real cup/pin tests.
+    // temporary cup estimate until the real sensor brackets are final
     if (!possessionState.manualOverride) {
         const int objectDistance = distance.get();
         if (objectDistance > 0 && objectDistance < config::sensors::possessionDistanceMm) {
@@ -22,11 +22,29 @@ void Sensors::update() {
 }
 
 void Sensors::stop() {}
-void Sensors::debug() const { logger.info(possessionState.hasPin ? "hasPin=true" : "hasPin=false"); }
-PossessionState& Sensors::possession() { return possessionState; }
-const PossessionState& Sensors::possession() const { return possessionState; }
-void Sensors::setHasPin(bool value) { possessionState.hasPin = value; }
-void Sensors::setHasCup(bool value) { possessionState.hasCup = value; }
-void Sensors::setManualOverride(bool value) { possessionState.manualOverride = value; }
+
+void Sensors::debug() const {
+    logger.info(possessionState.hasPin ? "hasPin=true" : "hasPin=false");
+}
+
+PossessionState& Sensors::possession() {
+    return possessionState;
+}
+
+const PossessionState& Sensors::possession() const {
+    return possessionState;
+}
+
+void Sensors::setHasPin(bool value) {
+    possessionState.hasPin = value;
+}
+
+void Sensors::setHasCup(bool value) {
+    possessionState.hasCup = value;
+}
+
+void Sensors::setManualOverride(bool value) {
+    possessionState.manualOverride = value;
+}
 
 } // namespace subsystems

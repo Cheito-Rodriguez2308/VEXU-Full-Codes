@@ -1,7 +1,13 @@
 #pragma once
 
-namespace subsystems { class Drivetrain; class Sensors; }
-namespace util { class Logger; }
+namespace subsystems {
+class Drivetrain;
+class Sensors;
+}
+
+namespace util {
+class Logger;
+}
 
 namespace tuning {
 

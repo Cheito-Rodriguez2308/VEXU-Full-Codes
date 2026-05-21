@@ -91,18 +91,32 @@ void Robot::updateDashboard() {
     pros::lcd::print(1, "Auton: %s", auton::toString(autonSelector.selected()));
     pros::lcd::print(2, "Pose x %.1f y %.1f h %.1f", pose.x, pose.y, pose.theta);
     pros::lcd::print(3, "IMU %s | Batt %.1fV", drivetrain.imuReady() ? "ready" : "cal", batteryVolts);
+
     pros::lcd::print(4,
                      "Track V %.1f H %.1f M %.0fC",
                      drivetrain.verticalTrackingInches(),
                      drivetrain.horizontalTrackingInches(),
                      hottestDriveMotor);
-    pros::lcd::print(5, "Pin %s Cup %s", sensors.possession().hasPin ? "yes" : "no", sensors.possession().hasCup ? "yes" : "no");
-    pros::lcd::print(6, "I:%s P:%s C:%s T:%s", subsystems::toString(intake.getState()), subsystems::toString(pin.getState()),
+
+    pros::lcd::print(5,
+                     "Pin %s Cup %s",
+                     sensors.possession().hasPin ? "yes" : "no",
+                     sensors.possession().hasCup ? "yes" : "no");
+    pros::lcd::print(6,
+                     "I:%s P:%s C:%s T:%s",
+                     subsystems::toString(intake.getState()),
+                     subsystems::toString(pin.getState()),
                      subsystems::toString(cup.getState()), subsystems::toString(toggle.getState()));
 
-    if (!drivetrain.imuReady()) controller.set_text(0, 0, "IMU calibrating");
-    if (batteryVolts < config::safety::lowBatteryVolts) controller.set_text(0, 0, "Battery low");
-    if (hottestDriveMotor > config::safety::hotMotorCelsius) controller.set_text(0, 0, "Drive motor hot");
+    if (!drivetrain.imuReady()) {
+        controller.set_text(0, 0, "IMU calibrating");
+    }
+    if (batteryVolts < config::safety::lowBatteryVolts) {
+        controller.set_text(0, 0, "Battery low");
+    }
+    if (hottestDriveMotor > config::safety::hotMotorCelsius) {
+        controller.set_text(0, 0, "Drive motor hot");
+    }
 }
 
 } // namespace core
