@@ -1,5 +1,8 @@
 #pragma once
 
+// Drivetrain owns the LemLib chassis and exposes team-readable motion wrappers.
+// Other modules should call these methods instead of touching LemLib directly.
+
 #include "config/robot_config.hpp"
 #include "lemlib/api.hpp"
 #include "pros/imu.hpp"

@@ -1,8 +1,8 @@
 #include "main.h"
 #include "core/robot.hpp"
 
-// main.cpp stays intentionally small. PROS owns these callbacks; our Robot class
-// owns the actual robot architecture so students can reason about one object.
+// Entry point for the PROS competition template.
+// Keep this file tiny: PROS owns callbacks, core::Robot owns robot behavior.
 static core::Robot robot;
 
 void initialize() { robot.initialize(); }

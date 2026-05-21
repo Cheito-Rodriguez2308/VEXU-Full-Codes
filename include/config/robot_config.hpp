@@ -1,5 +1,8 @@
 #pragma once
 
+// Robot configuration describes measured hardware, not behavior.
+// Students should replace TODO_PLACEHOLDER values here before real testing.
+
 #include "config/ports.hpp"
 #include "config/robot_identity.hpp"
 #include "lemlib/chassis/chassis.hpp"
@@ -26,7 +29,11 @@ struct DriveConfig {
 };
 
 struct PidConfig {
+    // Lateral PID controls field-space translation using LemLib odometry.
+    // Tune after wheel direction, track width, and horizontal drift are believable.
     lemlib::ControllerSettings lateral;
+    // Angular PID controls robot heading using the IMU through LemLib.
+    // Tune after the IMU calibrates reliably and the drivetrain turns symmetrically.
     lemlib::ControllerSettings angular;
 };
 

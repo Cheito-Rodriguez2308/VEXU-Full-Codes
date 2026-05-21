@@ -1,4 +1,5 @@
 #include "subsystems/sensors.hpp"
+#include "config/constants.hpp"
 
 namespace subsystems {
 
@@ -6,7 +7,7 @@ Sensors::Sensors(std::int8_t opticalPort, std::int8_t distancePort, util::Logger
     : optical(opticalPort), distance(distancePort), logger(logger) {}
 
 void Sensors::initialize() {
-    optical.set_led_pwm(50); // TODO_PLACEHOLDER optical brightness for bench testing.
+    optical.set_led_pwm(config::sensors::opticalLedPercent);
     logger.info("Sensors initialized with TODO_PLACEHOLDER ports");
 }
 
@@ -14,7 +15,7 @@ void Sensors::update() {
     // TODO_PLACEHOLDER possession estimation. Replace with real optical/distance/rotation conditions.
     if (!possessionState.manualOverride) {
         const int objectDistance = distance.get();
-        if (objectDistance > 0 && objectDistance < 80) possessionState.hasCup = true;
+        if (objectDistance > 0 && objectDistance < config::sensors::possessionDistanceMm) possessionState.hasCup = true;
     }
 }
 

@@ -27,3 +27,10 @@ not final competition code.
 
 - The project was cleaned and rebuilt with the bundled PROS make/toolchain.
 - Build output generated both cold and hot V5 packages successfully.
+
+## Reference Comparison
+
+The AON Push Back repository uses clear folder grouping and concise folder-level
+READMEs for orientation. This project keeps the current LemLib architecture but
+adopts that documentation style so students can understand each module before
+editing code.

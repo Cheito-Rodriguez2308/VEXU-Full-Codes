@@ -1,5 +1,8 @@
 #pragma once
 
+// CupMechanism is intentionally small so students can map each state to a
+// real mechanism action during testing.
+
 #include "pros/adi.hpp"
 #include "pros/motors.hpp"
 #include "util/logger.hpp"

@@ -5,6 +5,8 @@
 
 namespace core {
 
+// Constructor order matches the declaration order in robot.hpp.
+// Dependencies are passed by reference so ownership remains in Robot.
 Robot::Robot()
     : logger("VEXU"),
       controller(pros::E_CONTROLLER_MASTER),

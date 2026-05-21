@@ -1,5 +1,8 @@
 #pragma once
 
+// DriverControl translates controller intent into subsystem state requests.
+// It avoids direct mechanism voltages so drivers can change behavior safely.
+
 #include "control/driver_profiles.hpp"
 #include "pros/misc.hpp"
 

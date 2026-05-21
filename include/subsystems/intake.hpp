@@ -1,5 +1,8 @@
 #pragma once
 
+// Intake is a state machine. Driver control and autonomous request states;
+// this class decides the motor behavior for each state.
+
 #include "pros/motors.hpp"
 #include "util/logger.hpp"
 

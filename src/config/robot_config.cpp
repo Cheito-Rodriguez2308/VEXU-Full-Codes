@@ -3,12 +3,20 @@
 namespace config {
 
 static lemlib::ControllerSettings placeholderLateral() {
-    // TODO_PLACEHOLDER PID values. Tune kP and kD first; keep kI at zero until the team has evidence it is needed.
+    // TODO_PLACEHOLDER lateral PID.
+    // Controlled variable: distance error in inches from LemLib odometry.
+    // Sensor source: tracking wheels plus IMU.
+    // Tuning order: kP until it reaches the target, kD until overshoot settles, slew only if it slips.
+    // Keep kI at zero unless steady-state error remains after mechanical checks.
     return lemlib::ControllerSettings(8.0, 0.0, 28.0, 3.0, 1.0, 100.0, 3.0, 500.0, 8.0);
 }
 
 static lemlib::ControllerSettings placeholderAngular() {
-    // TODO_PLACEHOLDER PID values. Angular tuning should be done after IMU calibration and drivetrain checks.
+    // TODO_PLACEHOLDER angular PID.
+    // Controlled variable: heading error in degrees.
+    // Sensor source: IMU through LemLib odometry.
+    // Tuning order: kP for response, kD for damping, exit ranges for reliable settle time.
+    // Angular slew is usually left disabled unless the robot tips or breaks traction.
     return lemlib::ControllerSettings(3.0, 0.0, 18.0, 3.0, 1.0, 100.0, 3.0, 500.0, 0.0);
 }
 

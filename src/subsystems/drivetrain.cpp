@@ -1,4 +1,6 @@
 #include "subsystems/drivetrain.hpp"
+#include "pros/rtos.hpp"
+#include <cmath>
 
 namespace subsystems {
 
@@ -43,24 +45,41 @@ void Drivetrain::curvature(int throttle, int turn) { lemlibChassis.curvature(thr
 
 void Drivetrain::moveToPoint(const std::string& name, double x, double y, int timeout, lemlib::MoveToPointParams params, bool async) {
     logger.autonStep(name.c_str());
+    const std::uint32_t startMs = pros::millis();
     // moveToPoint is usually faster when final heading does not matter. earlyExitRange is in inches for chaining.
     lemlibChassis.moveToPoint(x, y, timeout, params, async);
-    if (!async) logger.pose("After moveToPoint", lemlibChassis.getPose());
+    if (!async) {
+        const lemlib::Pose finalPose = lemlibChassis.getPose();
+        const double positionError = std::hypot(x - finalPose.x, y - finalPose.y);
+        logger.pose("After moveToPoint", finalPose);
+        logger.motionSample("moveToPoint", positionError, 0.0, 0.0, pros::millis() - startMs);
+    }
 }
 
 void Drivetrain::moveToPose(const std::string& name, double x, double y, double theta, int timeout, lemlib::MoveToPoseParams params, bool async) {
     logger.autonStep(name.c_str());
+    const std::uint32_t startMs = pros::millis();
     // moveToPose uses LemLib's boomerang-style controller. lead changes how wide the turn is.
     // horizontalDrift affects motion while turning; TODO_PLACEHOLDER values must be tuned.
     lemlibChassis.moveToPose(x, y, theta, timeout, params, async);
-    if (!async) logger.pose("After moveToPose", lemlibChassis.getPose());
+    if (!async) {
+        const lemlib::Pose finalPose = lemlibChassis.getPose();
+        const double positionError = std::hypot(x - finalPose.x, y - finalPose.y);
+        logger.pose("After moveToPose", finalPose);
+        logger.motionSample("moveToPose", positionError, theta - finalPose.theta, 0.0, pros::millis() - startMs);
+    }
 }
 
 void Drivetrain::turnToHeading(const std::string& name, double heading, int timeout, lemlib::TurnToHeadingParams params, bool async) {
     logger.autonStep(name.c_str());
+    const std::uint32_t startMs = pros::millis();
     // turnToHeading uses an absolute field heading. Timeout is a hard limit.
     lemlibChassis.turnToHeading(heading, timeout, params, async);
-    if (!async) logger.pose("After turnToHeading", lemlibChassis.getPose());
+    if (!async) {
+        const lemlib::Pose finalPose = lemlibChassis.getPose();
+        logger.pose("After turnToHeading", finalPose);
+        logger.motionSample("turnToHeading", 0.0, heading - finalPose.theta, 0.0, pros::millis() - startMs);
+    }
 }
 
 void Drivetrain::turnToPoint(const std::string& name, double x, double y, int timeout, lemlib::TurnToPointParams params, bool async) {

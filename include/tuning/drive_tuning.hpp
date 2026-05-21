@@ -1,5 +1,8 @@
 #pragma once
 
+// DriveTuning contains repeatable tests, not final autonomous routes.
+// Run one test at a time on blocks first, then on the field.
+
 namespace subsystems { class Drivetrain; }
 namespace util { class Logger; }
 

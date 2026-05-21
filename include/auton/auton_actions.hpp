@@ -1,5 +1,8 @@
 #pragma once
 
+// AutonActions are reusable building blocks for routines.
+// Keep route strategy in auton_routines.cpp and low-level motion details here.
+
 #include "lemlib/api.hpp"
 #include "subsystems/drivetrain.hpp"
 #include "subsystems/intake.hpp"

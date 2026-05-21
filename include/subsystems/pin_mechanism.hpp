@@ -1,5 +1,8 @@
 #pragma once
 
+// PinMechanism separates scoring intent from motor and pneumatic outputs.
+// Replace placeholder states when the real mechanism is tested.
+
 #include "pros/adi.hpp"
 #include "pros/motors.hpp"
 #include "util/logger.hpp"

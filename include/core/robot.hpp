@@ -1,5 +1,8 @@
 #pragma once
 
+// Robot is the composition root: it owns every team subsystem and mode handler.
+// This keeps global state predictable for new programmers.
+
 #include "auton/auton_actions.hpp"
 #include "auton/auton_selector.hpp"
 #include "config/robot_config.hpp"

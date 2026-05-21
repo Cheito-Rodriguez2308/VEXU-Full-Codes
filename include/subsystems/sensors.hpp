@@ -1,5 +1,8 @@
 #pragma once
 
+// Sensors centralizes possession estimates and sensor debug helpers.
+// Keep thresholds in config/constants.hpp so tuning is easy to find.
+
 #include "pros/distance.hpp"
 #include "pros/imu.hpp"
 #include "pros/optical.hpp"

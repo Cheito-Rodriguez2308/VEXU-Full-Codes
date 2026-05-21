@@ -7,13 +7,13 @@
 namespace tuning {
 
 DriveTuning::DriveTuning(subsystems::Drivetrain& drivetrain, util::Logger& logger) : drivetrain(drivetrain), logger(logger) {}
-void DriveTuning::angular90() { drivetrain.turnToHeading("TODO_PLACEHOLDER angular 90 test", 90, 2000); }
-void DriveTuning::angular180() { drivetrain.turnToHeading("TODO_PLACEHOLDER angular 180 test", 180, 2500); }
-void DriveTuning::forward24() { drivetrain.moveToPoint("TODO_PLACEHOLDER forward 24 test", 0, 24, 2500); }
-void DriveTuning::forward48() { drivetrain.moveToPoint("TODO_PLACEHOLDER forward 48 test", 0, 48, 3500); }
-void DriveTuning::moveToPointTest() { drivetrain.moveToPoint("TODO_PLACEHOLDER moveToPoint test", 24, 24, 3000); }
-void DriveTuning::moveToPoseTest() { drivetrain.moveToPose("TODO_PLACEHOLDER moveToPose test", 24, 24, 90, 3500); }
-void DriveTuning::swingTurnTest() { drivetrain.swingToHeading("TODO_PLACEHOLDER swing test", 45, lemlib::DriveSide::LEFT, 2500); }
+void DriveTuning::angular90() { drivetrain.turnToHeading("TODO_PLACEHOLDER angular 90 test", config::tuning::angularQuarterTurnDeg, config::tuning::angularTimeoutMs); }
+void DriveTuning::angular180() { drivetrain.turnToHeading("TODO_PLACEHOLDER angular 180 test", config::tuning::angularHalfTurnDeg, config::tuning::angularTimeoutMs); }
+void DriveTuning::forward24() { drivetrain.moveToPoint("TODO_PLACEHOLDER forward 24 test", 0, config::tuning::forwardShortInches, config::tuning::lateralTimeoutMs); }
+void DriveTuning::forward48() { drivetrain.moveToPoint("TODO_PLACEHOLDER forward 48 test", 0, config::tuning::forwardLongInches, config::tuning::lateralTimeoutMs); }
+void DriveTuning::moveToPointTest() { drivetrain.moveToPoint("TODO_PLACEHOLDER moveToPoint test", config::tuning::moveToPointTestX, config::tuning::moveToPointTestY, config::tuning::lateralTimeoutMs); }
+void DriveTuning::moveToPoseTest() { drivetrain.moveToPose("TODO_PLACEHOLDER moveToPose test", config::tuning::moveToPointTestX, config::tuning::moveToPointTestY, config::tuning::moveToPoseHeadingDeg, config::tuning::lateralTimeoutMs); }
+void DriveTuning::swingTurnTest() { drivetrain.swingToHeading("TODO_PLACEHOLDER swing test", config::tuning::swingTurnHeadingDeg, lemlib::DriveSide::LEFT, config::tuning::angularTimeoutMs); }
 void DriveTuning::purePursuitTest() { drivetrain.followPath("TODO_PLACEHOLDER Pure Pursuit test", paths_safe_awp_red_txt, config::tuning::defaultLookahead, 4000, true); }
 void DriveTuning::motionChainingTest() {
     logger.info("Testing motion chaining: minSpeed avoids full stop; earlyExitRange trades accuracy for flow");

@@ -15,6 +15,39 @@ replaced, measured, tested, and explained by the student team.
 - `tuning/` gives repeatable tests for PID, odometry, Pure Pursuit, and mechanisms.
 - `util/` contains logging, math helpers, and timing helpers.
 
+```text
+PROS callbacks
+    |
+    v
+core::Robot
+    |
+    +-- config/       Robot identity, ports, drivetrain measurements, PID
+    +-- subsystems/   Drivetrain, intake, mechanisms, sensors
+    +-- control/      Driver profile, input curves, button requests
+    +-- auton/        Action wrappers, routine selector, path assets
+    +-- tuning/       Repeatable tests and tuning workflow
+    +-- util/         Logging, timers, small math helpers
+```
+
+The design intentionally favors simple ownership over clever indirection. A new
+programmer should be able to answer two questions quickly: who owns this device,
+and who is allowed to command it?
+
+## Setup For New Programmers
+
+1. Install PROS for VS Code or the PROS CLI.
+2. Clone the repository.
+3. Build once before editing so toolchain issues are separate from code issues.
+4. Read `include/config/README.md`, then `include/core/README.md`.
+5. Replace only one category of `TODO_PLACEHOLDER` values at a time.
+6. Test on blocks before field testing.
+
+## Branch Workflow
+
+- `main` is the public portfolio branch.
+- `testing` is for team bring-up, real hardware values, and route experiments.
+- Merge back to `main` only when the code is clean, documented, and explainable.
+
 ## Values that must be replaced before real robot testing
 
 - All motor ports and reversed signs.
@@ -59,3 +92,21 @@ Use this code on blocks or a lifted robot first. The placeholder ports are fake.
 9. Test `moveToPose` when final heading matters.
 10. Start Pure Pursuit lookahead around 10-15 inches, then adjust.
 11. Use motion chaining only when speed matters more than perfect settling.
+
+## PID Notes
+
+- Lateral PID controls translation error in inches using LemLib odometry.
+- Angular PID controls heading error in degrees using the IMU.
+- Tune `kP` until the robot reaches the target.
+- Tune `kD` until overshoot and oscillation settle.
+- Keep `kI` disabled unless repeated tests show real steady-state error.
+- Slew limits acceleration; use it to reduce slip or tipping, not to hide bad PID.
+- Exit conditions decide when a motion is "good enough" for autonomous timing.
+
+## Common Mistakes
+
+- Changing PID before verifying motor and sensor directions.
+- Using final autonomous coordinates before odometry is trustworthy.
+- Adding controller button logic inside subsystem classes.
+- Leaving robot-specific values without `TODO_PLACEHOLDER`.
+- Treating the public `main` branch as a testing branch.
