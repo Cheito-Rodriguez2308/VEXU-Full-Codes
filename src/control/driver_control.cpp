@@ -17,7 +17,7 @@ DriverControl::DriverControl(pros::Controller& controller, subsystems::Drivetrai
       sensors(sensors), profile(defaultDriverProfile()) {}
 
 void DriverControl::initialize() {
-    controller.set_text(0, 0, "TODO profile");
+    controller.set_text(0, 0, "Driver ready");
 }
 
 void DriverControl::update() {
@@ -25,8 +25,13 @@ void DriverControl::update() {
     updateSubsystemRequests();
 }
 
-void DriverControl::setProfile(const DriverProfile& nextProfile) { profile = nextProfile; }
-const DriverProfile& DriverControl::getProfile() const { return profile; }
+void DriverControl::setProfile(const DriverProfile& nextProfile) {
+    profile = nextProfile;
+}
+
+const DriverProfile& DriverControl::getProfile() const {
+    return profile;
+}
 
 void DriverControl::updateDrive() {
     InputCurve curve(profile);
@@ -58,17 +63,37 @@ void DriverControl::updateSubsystemRequests() {
     const bool manualOverride = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
     sensors.setManualOverride(manualOverride);
 
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) intake.setState(subsystems::IntakeState::IntakePin);
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) intake.setState(subsystems::IntakeState::IntakeCup);
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) intake.setState(subsystems::IntakeState::Outtake);
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) intake.setState(subsystems::IntakeState::Off);
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+        intake.setState(subsystems::IntakeState::IntakePin);
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
+        intake.setState(subsystems::IntakeState::IntakeCup);
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
+        intake.setState(subsystems::IntakeState::Outtake);
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+        intake.setState(subsystems::IntakeState::Off);
+    }
 
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) pin.setState(subsystems::PinMechanismState::Grab);
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) pin.setState(subsystems::PinMechanismState::Release);
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) cup.setState(subsystems::CupMechanismState::Stack);
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) cup.setState(subsystems::CupMechanismState::Release);
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) toggle.setState(subsystems::ToggleMechanismState::SetRed);
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) toggle.setState(subsystems::ToggleMechanismState::Retract);
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
+        pin.setState(subsystems::PinMechanismState::Grab);
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+        pin.setState(subsystems::PinMechanismState::Release);
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
+        cup.setState(subsystems::CupMechanismState::Stack);
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+        cup.setState(subsystems::CupMechanismState::Release);
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+        toggle.setState(subsystems::ToggleMechanismState::SetRed);
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+        toggle.setState(subsystems::ToggleMechanismState::Retract);
+    }
 }
 
 } // namespace control

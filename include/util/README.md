@@ -1,32 +1,27 @@
 # Utility Headers
 
-## Purpose
+Utilities are small helpers shared by several modules. If a helper knows about
+the intake, cups, pins, or match strategy, it probably belongs somewhere else.
 
-Utility code holds reusable helpers that do not belong to a subsystem.
-
-## Contained Files
+Files:
 
 - `logger.hpp`: brain, terminal, and controller-friendly logging helpers.
 - `math_utils.hpp`: small math helpers.
 - `timer.hpp`: simple elapsed-time helper.
 
-## Responsibilities
+Keep utilities:
 
 - Keep helpers generic.
 - Avoid robot strategy here.
 - Prefer clear names over clever shortcuts.
 
-## Dependencies
-
-Utilities may depend on PROS timing/display APIs and LemLib pose types.
-
-## Students Should Modify
+Safe edits:
 
 - Log formatting.
 - Extra motion samples during tuning.
 - Small math helpers only when they remove duplication.
 
-## Common Mistakes
+Common mistakes:
 
 - Turning utilities into a dumping ground.
 - Adding hardware-specific behavior here.

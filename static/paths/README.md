@@ -10,6 +10,5 @@ Use `path.jerryio.com` to create paths for this project.
 - Larger lookahead is faster but looser.
 - Check the flag direction so the robot does not start at the end of the path.
 
-The placeholder files in this folder are not real routes. They exist only so
-the scaffold can demonstrate `ASSET` declarations without inventing final
-competition paths.
+The example files in this folder are not real routes. Replace them after the
+robot pose, wheel size, and odometry directions are trusted.

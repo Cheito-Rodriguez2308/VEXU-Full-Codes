@@ -14,15 +14,15 @@ const char* toString(DriveMode mode) {
 
 DriverProfile defaultDriverProfile() {
     return {
-        DriveMode::DoubleStickArcade, // TODO_PLACEHOLDER preferred driver style.
-        5,                            // TODO_PLACEHOLDER joystick deadband.
-        12.0,                         // TODO_PLACEHOLDER throttle minimum output.
-        1.132,                        // TODO_PLACEHOLDER throttle expo gain.
-        12.0,                         // TODO_PLACEHOLDER steer minimum output.
-        1.132,                        // TODO_PLACEHOLDER steer expo gain.
-        0.5,                          // TODO_PLACEHOLDER arcade desaturate bias.
-        127,                          // TODO_PLACEHOLDER max speed.
-        0.45                          // TODO_PLACEHOLDER precision mode speed scale.
+        DriveMode::DoubleStickArcade, // TODO: ask drivers before locking this in.
+        5,                            // TODO: retest for stick drift on the match controller.
+        12.0,                         // TODO: minimum output that reliably moves the drivetrain.
+        1.132,                        // TODO: soften if drivers over-correct near center.
+        12.0,                         // TODO: minimum turn output.
+        1.132,                        // TODO: tune with full robot weight.
+        0.5,                          // Keeps arcade drive from clipping one side too early.
+        127,                          // Full driver speed until practice says otherwise.
+        0.45                          // Precision mode for lining up game-object pickups.
     };
 }
 

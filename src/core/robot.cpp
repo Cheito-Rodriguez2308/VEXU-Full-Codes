@@ -5,8 +5,8 @@
 
 namespace core {
 
-// Constructor order matches the declaration order in robot.hpp.
-// Dependencies are passed by reference so ownership remains in Robot.
+// Constructor order matches robot.hpp.
+// Passing references keeps hardware ownership in one place.
 Robot::Robot()
     : logger("VEXU"),
       controller(pros::E_CONTROLLER_MASTER),
@@ -61,12 +61,12 @@ void Robot::competitionInitialize() {
 
 void Robot::autonomous() {
     matchState.setMode(MatchMode::Autonomous);
-    logger.info("VEX U autonomous scaffold: 30 seconds available");
+    logger.info("VEX U autonomous: 30 seconds available");
     autonSelector.runSelected();
 }
 
 void Robot::opcontrol() {
-    logger.info("VEX U driver control scaffold: 90 seconds available");
+    logger.info("VEX U driver control: 90 seconds available");
 
     while (true) {
         matchState.setMode(tuningMenu.enabled() ? MatchMode::Tuning : MatchMode::DriverControl);
@@ -91,7 +91,11 @@ void Robot::updateDashboard() {
     pros::lcd::print(1, "Auton: %s", auton::toString(autonSelector.selected()));
     pros::lcd::print(2, "Pose x %.1f y %.1f h %.1f", pose.x, pose.y, pose.theta);
     pros::lcd::print(3, "IMU %s | Batt %.1fV", drivetrain.imuReady() ? "ready" : "cal", batteryVolts);
-    pros::lcd::print(4, "Track V %.1f H %.1f M %.0fC", drivetrain.verticalTrackingInches(), drivetrain.horizontalTrackingInches(), hottestDriveMotor);
+    pros::lcd::print(4,
+                     "Track V %.1f H %.1f M %.0fC",
+                     drivetrain.verticalTrackingInches(),
+                     drivetrain.horizontalTrackingInches(),
+                     hottestDriveMotor);
     pros::lcd::print(5, "Pin %s Cup %s", sensors.possession().hasPin ? "yes" : "no", sensors.possession().hasCup ? "yes" : "no");
     pros::lcd::print(6, "I:%s P:%s C:%s T:%s", subsystems::toString(intake.getState()), subsystems::toString(pin.getState()),
                      subsystems::toString(cup.getState()), subsystems::toString(toggle.getState()));

@@ -1,4 +1,7 @@
-# Code Style Notes
+# Style Notes
+
+This code should survive a rushed tournament day. Prefer boring, readable code
+over clever patterns.
 
 ## Naming
 
@@ -40,5 +43,5 @@ should request subsystem states instead of directly controlling motors.
 
 ## Placeholder Values
 
-Every unmeasured robot-specific value must include `TODO_PLACEHOLDER`. Replace
+Every unmeasured robot-specific value must include `TODO`. Replace
 one group at a time and record the test result in `docs/`.

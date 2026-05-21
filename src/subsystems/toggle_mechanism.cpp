@@ -14,23 +14,51 @@ const char* toString(ToggleMechanismState state) {
     return "Unknown";
 }
 
-ToggleMechanism::ToggleMechanism(std::int8_t motorPort, util::Logger& logger) : motor(motorPort), logger(logger) {}
+ToggleMechanism::ToggleMechanism(std::int8_t motorPort, util::Logger& logger)
+    : motor(motorPort), logger(logger) {}
 
-void ToggleMechanism::initialize() { stop(); }
+void ToggleMechanism::initialize() {
+    stop();
+}
 
 void ToggleMechanism::update() {
     switch (state) {
-    case ToggleMechanismState::Idle: motor.move_voltage(0); break;
-    case ToggleMechanismState::SetRed: motor.move_voltage(config::mechanism::toggleVoltage); break;
-    case ToggleMechanismState::SetBlue: motor.move_voltage(config::mechanism::toggleVoltage); break;
-    case ToggleMechanismState::SetYellow: motor.move_voltage(config::mechanism::toggleVoltage); break;
-    case ToggleMechanismState::Retract: motor.move_voltage(-config::mechanism::toggleVoltage); break;
+    case ToggleMechanismState::Idle:
+        motor.move_voltage(0);
+        break;
+    case ToggleMechanismState::SetRed:
+        motor.move_voltage(config::mechanism::toggleVoltage);
+        break;
+    case ToggleMechanismState::SetBlue:
+        motor.move_voltage(config::mechanism::toggleVoltage);
+        break;
+    case ToggleMechanismState::SetYellow:
+        motor.move_voltage(config::mechanism::toggleVoltage);
+        break;
+    case ToggleMechanismState::Retract:
+        motor.move_voltage(-config::mechanism::toggleVoltage);
+        break;
     }
 }
 
-void ToggleMechanism::stop() { state = ToggleMechanismState::Idle; motor.brake(); }
-void ToggleMechanism::setState(ToggleMechanismState nextState) { if (state != nextState) logger.subsystemState("Toggle", toString(nextState)); state = nextState; }
-ToggleMechanismState ToggleMechanism::getState() const { return state; }
-void ToggleMechanism::debug() const { logger.subsystemState("Toggle", toString(state)); }
+void ToggleMechanism::stop() {
+    state = ToggleMechanismState::Idle;
+    motor.brake();
+}
+
+void ToggleMechanism::setState(ToggleMechanismState nextState) {
+    if (state != nextState) {
+        logger.subsystemState("Toggle", toString(nextState));
+    }
+    state = nextState;
+}
+
+ToggleMechanismState ToggleMechanism::getState() const {
+    return state;
+}
+
+void ToggleMechanism::debug() const {
+    logger.subsystemState("Toggle", toString(state));
+}
 
 } // namespace subsystems

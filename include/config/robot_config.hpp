@@ -1,7 +1,7 @@
 #pragma once
 
 // Robot configuration describes measured hardware, not behavior.
-// Students should replace TODO_PLACEHOLDER values here before real testing.
+// Replace TODO-marked measurements here before real robot testing.
 
 #include "config/ports.hpp"
 #include "config/robot_identity.hpp"
@@ -10,6 +10,10 @@
 
 namespace config {
 
+/**
+ * @brief Tracking wheel geometry used by LemLib odometry.
+ * Offsets are signed, so direction tests come before PID tuning.
+ */
 struct TrackingConfig {
     double wheelDiameter;
     double gearRatio;
@@ -19,6 +23,10 @@ struct TrackingConfig {
     bool horizontalReversed;
 };
 
+/**
+ * @brief Drivetrain measurements passed into LemLib.
+ * Retune these after changing wheels, cartridges, or drive weight.
+ */
 struct DriveConfig {
     pros::motor_gearset_e_t gearset;
     double trackWidth;
@@ -28,6 +36,9 @@ struct DriveConfig {
     TrackingConfig tracking;
 };
 
+/**
+ * @brief LemLib motion controllers for lateral and angular movement.
+ */
 struct PidConfig {
     // Lateral PID controls field-space translation using LemLib odometry.
     // Tune after wheel direction, track width, and horizontal drift are believable.

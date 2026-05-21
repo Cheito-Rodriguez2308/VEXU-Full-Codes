@@ -30,13 +30,49 @@ class Drivetrain {
     void arcade(int throttle, int turn, float desaturateBias);
     void curvature(int throttle, int turn);
 
-    void moveToPoint(const std::string& name, double x, double y, int timeout, lemlib::MoveToPointParams params = {}, bool async = false);
-    void moveToPose(const std::string& name, double x, double y, double theta, int timeout, lemlib::MoveToPoseParams params = {}, bool async = false);
-    void turnToHeading(const std::string& name, double heading, int timeout, lemlib::TurnToHeadingParams params = {}, bool async = false);
-    void turnToPoint(const std::string& name, double x, double y, int timeout, lemlib::TurnToPointParams params = {}, bool async = false);
-    void swingToHeading(const std::string& name, double heading, lemlib::DriveSide lockedSide, int timeout, lemlib::SwingToHeadingParams params = {}, bool async = false);
-    void swingToPoint(const std::string& name, double x, double y, lemlib::DriveSide lockedSide, int timeout, lemlib::SwingToPointParams params = {}, bool async = false);
-    void followPath(const std::string& name, const asset& path, double lookahead, int timeout, bool forwards, bool async = false);
+    void moveToPoint(const std::string& name,
+                     double x,
+                     double y,
+                     int timeout,
+                     lemlib::MoveToPointParams params = {},
+                     bool async = false);
+    void moveToPose(const std::string& name,
+                    double x,
+                    double y,
+                    double theta,
+                    int timeout,
+                    lemlib::MoveToPoseParams params = {},
+                    bool async = false);
+    void turnToHeading(const std::string& name,
+                       double heading,
+                       int timeout,
+                       lemlib::TurnToHeadingParams params = {},
+                       bool async = false);
+    void turnToPoint(const std::string& name,
+                     double x,
+                     double y,
+                     int timeout,
+                     lemlib::TurnToPointParams params = {},
+                     bool async = false);
+    void swingToHeading(const std::string& name,
+                        double heading,
+                        lemlib::DriveSide lockedSide,
+                        int timeout,
+                        lemlib::SwingToHeadingParams params = {},
+                        bool async = false);
+    void swingToPoint(const std::string& name,
+                      double x,
+                      double y,
+                      lemlib::DriveSide lockedSide,
+                      int timeout,
+                      lemlib::SwingToPointParams params = {},
+                      bool async = false);
+    void followPath(const std::string& name,
+                    const asset& path,
+                    double lookahead,
+                    int timeout,
+                    bool forwards,
+                    bool async = false);
 
     void cancelMotion();
     void cancelAllMotions();

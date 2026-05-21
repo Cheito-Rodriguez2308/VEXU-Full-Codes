@@ -8,14 +8,16 @@ Sensors::Sensors(std::int8_t opticalPort, std::int8_t distancePort, util::Logger
 
 void Sensors::initialize() {
     optical.set_led_pwm(config::sensors::opticalLedPercent);
-    logger.info("Sensors initialized with TODO_PLACEHOLDER ports");
+    logger.info("Sensors initialized");
 }
 
 void Sensors::update() {
-    // TODO_PLACEHOLDER possession estimation. Replace with real optical/distance/rotation conditions.
+    // TODO: replace this with conditions from real cup/pin tests.
     if (!possessionState.manualOverride) {
         const int objectDistance = distance.get();
-        if (objectDistance > 0 && objectDistance < config::sensors::possessionDistanceMm) possessionState.hasCup = true;
+        if (objectDistance > 0 && objectDistance < config::sensors::possessionDistanceMm) {
+            possessionState.hasCup = true;
+        }
     }
 }
 

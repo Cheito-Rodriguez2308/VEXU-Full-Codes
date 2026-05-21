@@ -1,32 +1,26 @@
 # Core Headers
 
-## Purpose
+Core owns the robot at match level. PROS calls into `Robot`, then `Robot`
+updates the modules in a predictable order.
 
-Core headers define the robot-level owner and match state. This is the central
-composition layer of the program.
-
-## Contained Files
+Files:
 
 - `robot.hpp`: owns subsystems, driver control, autonomous, and tuning.
 - `match_state.hpp`: names the current competition mode.
 
-## Responsibilities
+Keep this boring:
 
 - Keep PROS callbacks out of subsystem code.
 - Make ownership obvious.
 - Keep periodic loops readable and delayed.
 
-## Dependencies
-
-Core depends on all team-owned modules because it wires the robot together.
-
-## Students Should Modify
+Good edits:
 
 - Dashboard contents.
 - Robot lifecycle sequencing.
 - Which tuning or auton tools run in each mode.
 
-## Common Mistakes
+Common mistakes:
 
 - Creating global subsystem objects outside `Robot`.
 - Putting route coordinates in `Robot`.

@@ -1,10 +1,9 @@
 # Subsystem Headers
 
-## Purpose
+Subsystems model real mechanisms as small classes with state machines. Driver
+control and auton request states; the subsystem decides what the hardware does.
 
-Subsystems model physical robot mechanisms as small classes with state machines.
-
-## Contained Files
+Files:
 
 - `drivetrain.hpp`: LemLib chassis wrapper and motion API.
 - `intake.hpp`: intake state machine.
@@ -13,24 +12,19 @@ Subsystems model physical robot mechanisms as small classes with state machines.
 - `toggle_mechanism.hpp`: toggle mechanism state machine.
 - `sensors.hpp`: possession and sensor facade.
 
-## Responsibilities
+What belongs here:
 
 - Own hardware objects.
 - Expose `initialize()`, `update()`, `stop()`, `setState()`, and `debug()`.
 - Convert requested states into motor/pneumatic behavior.
 
-## Dependencies
-
-Subsystems depend on PROS hardware types, LemLib for drivetrain motion, config,
-and logging.
-
-## Students Should Modify
+Usually changed after mechanism testing:
 
 - State names when real mechanism behavior is clearer.
 - Motor voltages and pneumatic behavior after testing.
 - Sensor thresholds for possession guards.
 
-## Common Mistakes
+Common mistakes:
 
 - Reading controller buttons inside subsystems.
 - Adding final autonomous decisions inside subsystem classes.

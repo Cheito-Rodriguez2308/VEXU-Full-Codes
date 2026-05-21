@@ -1,34 +1,26 @@
 # Autonomous Headers
 
-## Purpose
+Auton code should read like a driver explaining the plan. The route files call
+small actions, and the action layer handles the LemLib details.
 
-Autonomous code is split into reusable actions, routine selection, routine
-strategy, and path asset declarations.
-
-## Contained Files
-
-- `auton_actions.hpp`: reusable movement and mechanism actions.
-- `auton_routines.hpp`: named scaffold routines.
+- `auton_actions.hpp`: reusable movement and mechanism calls.
+- `auton_routines.hpp`: named routine drafts.
 - `auton_selector.hpp`: selected routine state.
 - `paths.hpp`: LemLib path assets.
 
-## Responsibilities
+Keep this folder honest:
 
 - Keep routes readable.
 - Reuse action wrappers.
-- Keep coordinates marked `TODO_PLACEHOLDER` until tested.
+- Keep coordinates marked `TODO` until tested.
 
-## Dependencies
-
-Autonomous depends on subsystems, LemLib motion params, and static path assets.
-
-## Students Should Modify
+Common edits:
 
 - Routine order and strategy.
-- Placeholder poses and path names after field testing.
+- Poses and path names after field testing.
 - Timeouts, `minSpeed`, and `earlyExitRange`.
 
-## Tuning Workflow
+Bring-up order:
 
 1. Test each action alone.
 2. Add timeouts before chaining.
@@ -36,7 +28,7 @@ Autonomous depends on subsystems, LemLib motion params, and static path assets.
 4. Use `moveToPose` when final heading matters.
 5. Use Pure Pursuit for smooth preplanned paths.
 
-## Common Mistakes
+Common mistakes:
 
 - Writing final routes before odometry is tuned.
 - Turning to points too close to the robot.

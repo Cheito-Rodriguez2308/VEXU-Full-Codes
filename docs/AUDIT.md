@@ -1,7 +1,7 @@
 # Project Audit Notes
 
-This repository is a VEX U PROS C++ and LemLib scaffold. It is intentionally
-not final competition code.
+This repository is VEX U PROS C++ and LemLib code that is still in bring-up.
+It is not final competition code.
 
 ## Critical Issues Checked
 
@@ -19,8 +19,8 @@ not final competition code.
 
 ## Incomplete By Design
 
-- Hardware ports, drivetrain measurements, PID constants, motion limits, and autonomous coordinates remain `TODO_PLACEHOLDER`.
-- Path files in `static/paths` are fake placeholders and must be replaced with LemLib path files.
+- Hardware ports, drivetrain measurements, PID constants, motion limits, and autonomous coordinates remain `TODO`.
+- Path files in `static/paths` are examples and must be replaced with LemLib path files.
 - Possession estimation uses placeholder thresholds and must be tuned with real sensors.
 
 ## Validation
@@ -31,6 +31,6 @@ not final competition code.
 ## Reference Comparison
 
 The AON Push Back repository uses clear folder grouping and concise folder-level
-READMEs for orientation. This project keeps the current LemLib architecture but
-adopts that documentation style so students can understand each module before
-editing code.
+READMEs for orientation. The current LemLib layout stays in place, with
+team-facing notes so new programmers can understand each module before editing
+code.

@@ -1,29 +1,22 @@
-# Source Directory
+# Source Files
 
-## Purpose
+This folder mirrors `include/`. If a header tells you what a class can do, the
+matching source file should show how it does it.
 
-Implementation files for the VEX U robot scaffold live here. The folder mirrors
-the team-owned folders in `include/` so students can jump from an interface to
-its behavior quickly.
-
-## Responsibilities
+Rules we try to keep:
 
 - Keep PROS callbacks in `main.cpp` short.
 - Keep robot ownership in `core/robot.cpp`.
 - Keep subsystem update logic inside subsystem files.
+- Keep route decisions in `auton/`, not inside mechanisms.
 
-## Dependencies
-
-Source files can include PROS, LemLib, and local headers. Prefer local helpers
-from `util/` before duplicating logic.
-
-## Students Should Modify
+Good first places to edit:
 
 - Subsystem state transitions.
 - Driver button requests.
 - Autonomous routines and tuning tests.
 
-## Common Mistakes
+Easy mistakes:
 
 - Hiding robot-specific values in implementation files.
 - Blocking forever without `pros::delay()`.

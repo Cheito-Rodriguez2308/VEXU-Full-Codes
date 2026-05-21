@@ -2,8 +2,8 @@
 
 namespace config {
 
-static lemlib::ControllerSettings placeholderLateral() {
-    // TODO_PLACEHOLDER lateral PID.
+static lemlib::ControllerSettings todoLateralSettings() {
+    // TODO: lateral PID.
     // Controlled variable: distance error in inches from LemLib odometry.
     // Sensor source: tracking wheels plus IMU.
     // Tuning order: kP until it reaches the target, kD until overshoot settles, slew only if it slips.
@@ -11,8 +11,8 @@ static lemlib::ControllerSettings placeholderLateral() {
     return lemlib::ControllerSettings(8.0, 0.0, 28.0, 3.0, 1.0, 100.0, 3.0, 500.0, 8.0);
 }
 
-static lemlib::ControllerSettings placeholderAngular() {
-    // TODO_PLACEHOLDER angular PID.
+static lemlib::ControllerSettings todoAngularSettings() {
+    // TODO: angular PID.
     // Controlled variable: heading error in degrees.
     // Sensor source: IMU through LemLib odometry.
     // Tuning order: kP for response, kD for damping, exit ranges for reliable settle time.
@@ -25,21 +25,21 @@ const RobotConfig& robotAConfig() {
         RobotIdentity::RobotA,
         robotAPorts(),
         {
-            pros::E_MOTOR_GEARSET_06, // TODO_PLACEHOLDER blue cartridge.
-            12.5,                     // TODO_PLACEHOLDER track width measured wheel-center to wheel-center.
-            3.25,                     // TODO_PLACEHOLDER drive wheel diameter.
-            360.0,                    // TODO_PLACEHOLDER drivetrain RPM after external gearing.
-            2.0,                      // TODO_PLACEHOLDER horizontal drift; start near 2 for drift drive, 8 for traction-center.
+            pros::E_MOTOR_GEARSET_06, // TODO: drive cartridge.
+            12.5,                     // TODO: track width, wheel center to wheel center.
+            3.25,                     // TODO: drive wheel diameter.
+            360.0,                    // TODO: drivetrain RPM after external gearing.
+            2.0,                      // TODO: horizontal drift; start near 2 or 8 depending on drive style.
             {
-                2.75,  // TODO_PLACEHOLDER tracking wheel diameter.
-                1.0,   // TODO_PLACEHOLDER tracking wheel gear ratio.
-                -1.25, // TODO_PLACEHOLDER vertical wheel offset; sign matters.
-                -2.75, // TODO_PLACEHOLDER horizontal wheel offset; sign matters.
-                false, // TODO_PLACEHOLDER direction.
-                true   // TODO_PLACEHOLDER direction.
+                2.75,  // TODO: tracking wheel diameter.
+                1.0,   // TODO: tracking wheel gear ratio.
+                -1.25, // TODO: vertical wheel offset; sign matters.
+                -2.75, // TODO: horizontal wheel offset; sign matters.
+                false, // TODO: vertical wheel direction.
+                true   // TODO: horizontal wheel direction.
             }
         },
-        {placeholderLateral(), placeholderAngular()}
+        {todoLateralSettings(), todoAngularSettings()}
     };
     return config;
 }
@@ -49,21 +49,21 @@ const RobotConfig& robotBConfig() {
         RobotIdentity::RobotB,
         robotBPorts(),
         {
-            pros::E_MOTOR_GEARSET_06, // TODO_PLACEHOLDER blue cartridge.
-            12.0,                     // TODO_PLACEHOLDER Robot B track width.
-            3.25,                     // TODO_PLACEHOLDER Robot B wheel diameter.
-            360.0,                    // TODO_PLACEHOLDER Robot B drivetrain RPM.
-            2.0,                      // TODO_PLACEHOLDER Robot B horizontal drift.
+            pros::E_MOTOR_GEARSET_06, // TODO: Robot B drive cartridge.
+            12.0,                     // TODO: Robot B track width.
+            3.25,                     // TODO: Robot B wheel diameter.
+            360.0,                    // TODO: Robot B drivetrain RPM.
+            2.0,                      // TODO: Robot B horizontal drift.
             {
-                2.75,  // TODO_PLACEHOLDER Robot B tracking wheel diameter.
-                1.0,   // TODO_PLACEHOLDER Robot B tracking wheel gear ratio.
-                -1.0,  // TODO_PLACEHOLDER Robot B vertical offset.
-                -2.5,  // TODO_PLACEHOLDER Robot B horizontal offset.
-                false, // TODO_PLACEHOLDER direction.
-                false  // TODO_PLACEHOLDER direction.
+                2.75,  // TODO: Robot B tracking wheel diameter.
+                1.0,   // TODO: Robot B tracking wheel gear ratio.
+                -1.0,  // TODO: Robot B vertical offset.
+                -2.5,  // TODO: Robot B horizontal offset.
+                false, // TODO: Robot B vertical wheel direction.
+                false  // TODO: Robot B horizontal wheel direction.
             }
         },
-        {placeholderLateral(), placeholderAngular()}
+        {todoLateralSettings(), todoAngularSettings()}
     };
     return config;
 }

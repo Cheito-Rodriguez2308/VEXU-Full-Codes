@@ -7,7 +7,7 @@ const char* toString(RobotIdentity identity) {
 }
 
 RobotIdentity selectedRobot() {
-    // TODO_PLACEHOLDER portfolio default. Change this on each brain or replace with an SD-card/team selector.
+    // TODO: Set this per brain, or replace it with an SD-card/team selector.
     return RobotIdentity::RobotA;
 }
 

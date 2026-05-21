@@ -26,11 +26,19 @@ void AutonSelector::initialize() {
 }
 
 void AutonSelector::update() {
-    // TODO_PLACEHOLDER simple selector. Replace with a brain-screen selector when the team is ready.
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) setSelected(AutonRoutine::RedSafeAWP);
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) setSelected(AutonRoutine::BlueSafeAWP);
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) setSelected(AutonRoutine::SkillsRoute);
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) setSelected(AutonRoutine::DoNothing);
+    // TODO: replace this with a brain-screen selector when routine testing gets serious.
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+        setSelected(AutonRoutine::RedSafeAWP);
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+        setSelected(AutonRoutine::BlueSafeAWP);
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+        setSelected(AutonRoutine::SkillsRoute);
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+        setSelected(AutonRoutine::DoNothing);
+    }
 }
 
 void AutonSelector::runSelected() {
@@ -52,6 +60,8 @@ void AutonSelector::setSelected(AutonRoutine routine) {
     logger.info(std::string("Selected auton: ") + toString(routine));
 }
 
-AutonRoutine AutonSelector::selected() const { return selectedRoutine; }
+AutonRoutine AutonSelector::selected() const {
+    return selectedRoutine;
+}
 
 } // namespace auton

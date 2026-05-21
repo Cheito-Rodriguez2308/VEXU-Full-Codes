@@ -1,28 +1,26 @@
-# Include Directory
+# Headers
 
-## Purpose
+Headers describe what each part of the robot can do. They should stay easy to
+read in GitHub because new programmers usually start here before jumping into
+the matching `.cpp` file.
 
-Public headers for the team-owned robot architecture live here. Headers define
-interfaces and data shapes; source files in `src/` contain behavior.
-
-## Responsibilities
+Keep in mind:
 
 - Keep class interfaces small and readable.
 - Avoid hardware values in subsystem headers.
 - Prefer enums and named structs over raw numbers.
+- Put behavior in `src/`, not in the header unless it is a tiny helper.
 
-## Dependencies
+Headers may include PROS and LemLib types when the public interface truly needs
+them. If the type is only used inside one `.cpp`, keep the include there.
 
-Headers may include PROS and LemLib types when the interface truly needs them.
-Avoid including heavy headers just for implementation details.
-
-## Students Should Modify
+Common edits:
 
 - Add new subsystem interfaces when the robot gains a real mechanism.
 - Update config types when new hardware needs structured settings.
 
-## Common Mistakes
+Watch for:
 
 - Putting final robot ports in subsystem headers.
 - Letting driver control talk directly to motors.
-- Adding clever abstractions before there is repeated code to simplify.
+- Adding a helper before there is repeated code to simplify.
