@@ -14,7 +14,9 @@ It is not final competition code.
 ## Structural Issues Checked
 
 - `include/` and `src/` are mirrored for config, core, subsystems, control, auton, tuning, and util.
-- Required classes exist for Robot, Drivetrain, Intake, PinMechanism, CupMechanism, ToggleMechanism, Sensors, DriverControl, AutonSelector, AutonActions, tuning modules, Logger, and config.
+- Required classes exist for Robot, Drivetrain, Intake, PinMechanism,
+  CupMechanism, ToggleMechanism, Sensors, DriverControl, AutonSelector,
+  AutonActions, tuning modules, Logger, and config.
 - Robot A and Robot B share config types instead of duplicated code.
 
 ## Incomplete By Design
