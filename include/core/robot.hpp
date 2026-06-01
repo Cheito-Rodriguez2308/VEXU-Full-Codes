@@ -15,6 +15,7 @@
 #include "subsystems/sensors.hpp"
 #include "subsystems/toggle_mechanism.hpp"
 #include "tuning/drive_tuning.hpp"
+#include "tuning/auto_tuner.hpp"
 #include "tuning/pid_tuning.hpp"
 #include "tuning/sensor_tuning.hpp"
 #include "tuning/tuning_menu.hpp"
@@ -52,6 +53,7 @@ class Robot {
     tuning::DriveTuning driveTuning;
     tuning::PidTuning pidTuning;
     tuning::SensorTuning sensorTuning;
+    tuning::AutoTuner autoTuner;
     tuning::TuningMenu tuningMenu;
 };
 

@@ -2,9 +2,14 @@
 
 namespace tuning {
 
-TuningMenu::TuningMenu(pros::Controller& controller, DriveTuning& driveTuning, PidTuning& pidTuning,
-                       SensorTuning& sensorTuning, util::Logger& logger)
+TuningMenu::TuningMenu(pros::Controller& controller,
+                       DriveTuning& driveTuning,
+                       PidTuning& pidTuning,
+                       SensorTuning& sensorTuning,
+                       AutoTuner& autoTuner,
+                       util::Logger& logger)
     : controller(controller), driveTuning(driveTuning), pidTuning(pidTuning), sensorTuning(sensorTuning),
+      autoTuner(autoTuner),
       logger(logger) {}
 
 void TuningMenu::initialize() {
@@ -18,6 +23,18 @@ void TuningMenu::update() {
     }
     if (!tuningEnabled) {
         return;
+    }
+
+    // R1 keeps AutoTuner harder to start by accident.
+    if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
+            autoTuner.runAngularTest();
+            return;
+        }
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+            autoTuner.runLateralTest();
+            return;
+        }
     }
 
     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {

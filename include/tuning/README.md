@@ -18,3 +18,6 @@ Keep notes after runs:
 - tile vs. board
 - whether the robot had game objects loaded
 - what was changed since the last run
+
+AutoTuner is in here too. It only recommends values; we still copy anything we
+trust into config by hand.

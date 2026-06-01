@@ -23,7 +23,8 @@ Robot::Robot()
       driveTuning(drivetrain, logger),
       pidTuning(logger),
       sensorTuning(drivetrain, sensors, logger),
-      tuningMenu(controller, driveTuning, pidTuning, sensorTuning, logger) {}
+      autoTuner(controller, drivetrain, config, logger),
+      tuningMenu(controller, driveTuning, pidTuning, sensorTuning, autoTuner, logger) {}
 
 void Robot::initialize() {
     matchState.setMode(MatchMode::Initialize);

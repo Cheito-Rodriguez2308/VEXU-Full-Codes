@@ -1,6 +1,7 @@
 #pragma once
 
 #include "pros/misc.hpp"
+#include "tuning/auto_tuner.hpp"
 #include "tuning/drive_tuning.hpp"
 #include "tuning/pid_tuning.hpp"
 #include "tuning/sensor_tuning.hpp"
@@ -10,8 +11,12 @@ namespace tuning {
 
 class TuningMenu {
   public:
-    TuningMenu(pros::Controller& controller, DriveTuning& driveTuning, PidTuning& pidTuning,
-               SensorTuning& sensorTuning, util::Logger& logger);
+    TuningMenu(pros::Controller& controller,
+               DriveTuning& driveTuning,
+               PidTuning& pidTuning,
+               SensorTuning& sensorTuning,
+               AutoTuner& autoTuner,
+               util::Logger& logger);
     void initialize();
     void update();
     bool enabled() const;
@@ -22,6 +27,7 @@ class TuningMenu {
     DriveTuning& driveTuning;
     PidTuning& pidTuning;
     SensorTuning& sensorTuning;
+    AutoTuner& autoTuner;
     util::Logger& logger;
     bool tuningEnabled = false;
 };

@@ -106,6 +106,31 @@ Use this code on blocks or a lifted robot first. The sample ports are not wired 
 - Slew limits acceleration; use it to reduce slip or tipping, not to hide bad PID.
 - Exit conditions decide when a motion is "good enough" for autonomous timing.
 
+## AutoTuner Notes
+
+AutoTuner is a helper, not a magic PID button. It runs short low-output tests,
+scores the results, and prints recommended gains. It does not overwrite
+`config/robot_config.cpp`.
+
+How we run it:
+
+- Enable tuning with `L1 + X`.
+- Hold `R1` and press `A` for the 90 degree angular test.
+- Hold `R1` and press `B` for the 24 inch lateral test.
+- Press `X` during a run to cancel.
+
+What it measures:
+
+- final error
+- overshoot
+- settle time
+- oscillation count
+- score from `error * 3 + overshoot * 2 + settleTime + oscillations * 5`
+
+Copy recommended values by hand after checking the run. Bad results usually mean
+sensor direction, wheel size, battery voltage, or mechanical drag needs another
+look before changing PID.
+
 ## Common Mistakes
 
 - Changing PID before verifying motor and sensor directions.
