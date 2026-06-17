@@ -39,10 +39,13 @@ void Robot::initialize() {
     driverControl.initialize();
     autonSelector.initialize();
     tuningMenu.initialize();
+    startBackgroundTasks();
 }
 
 void Robot::disabled() {
     matchState.setMode(MatchMode::Disabled);
+    intake.stopScan();
+    intake.stopReleasing();
     drivetrain.stop();
     intake.stop();
     pin.stop();
@@ -63,11 +66,13 @@ void Robot::competitionInitialize() {
 void Robot::autonomous() {
     matchState.setMode(MatchMode::Autonomous);
     logger.info("VEX U autonomous: 30 seconds available");
+    intake.startScan();
     autonSelector.runSelected();
 }
 
 void Robot::opcontrol() {
     logger.info("VEX U driver control: 90 seconds available");
+    intake.startScan();
 
     while (true) {
         matchState.setMode(tuningMenu.enabled() ? MatchMode::Tuning : MatchMode::DriverControl);
@@ -81,6 +86,51 @@ void Robot::opcontrol() {
         updateDashboard();
         pros::delay(config::timing::driverLoopMs);
     }
+}
+
+void Robot::startBackgroundTasks() {
+    if (intakeScanTask == nullptr) {
+        intakeScanTask = pros::Task::create([this] {
+            while (true) {
+                intake.scanTaskStep();
+                pros::delay(50);
+            }
+        }, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "intake scan");
+    }
+
+    if (intakeSortTask == nullptr) {
+        intakeSortTask = pros::Task::create([this] {
+            while (true) {
+                intake.sortTaskStep();
+                pros::delay(10);
+            }
+        }, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "intake sort");
+    }
+
+    if (autonomousSafetyTask == nullptr) {
+        autonomousSafetyTask = pros::Task::create([this] {
+            while (true) {
+                autonomousSafetyStep();
+                pros::delay(50);
+            }
+        }, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "auton safety");
+    }
+
+    logger.info("Background tasks started");
+}
+
+void Robot::autonomousSafetyStep() {
+    if (matchState.mode() != MatchMode::Autonomous) return;
+    if (!controller.get_digital(pros::E_CONTROLLER_DIGITAL_X)) return;
+
+    drivetrain.stop();
+    intake.stopScan();
+    intake.stopReleasing();
+    intake.stop();
+    pin.stop();
+    cup.stop();
+    toggle.stop();
+    logger.warn("Auton safety stop");
 }
 
 void Robot::updateDashboard() {

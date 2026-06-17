@@ -55,13 +55,13 @@ class Intake {
     void stopScan();
     void startReleasing();
     void stopReleasing();
+    void scanTaskStep();
+    void sortTaskStep();
     void debug() const;
 
   private:
     void updateSmallRobot();
     void updateBigRobot();
-    void updateScan();
-    void updateSort();
     void moveAll(int rpm);
     void moveStorePath(int rpm);
     void moveSmallStore(int rpm);

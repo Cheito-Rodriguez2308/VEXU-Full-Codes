@@ -21,6 +21,7 @@
 #include "tuning/tuning_menu.hpp"
 #include "util/logger.hpp"
 #include "pros/misc.hpp"
+#include "pros/rtos.hpp"
 
 namespace core {
 
@@ -35,6 +36,8 @@ class Robot {
     void opcontrol();
 
   private:
+    void startBackgroundTasks();
+    void autonomousSafetyStep();
     void updateDashboard();
 
     util::Logger logger;
@@ -55,6 +58,9 @@ class Robot {
     tuning::SensorTuning sensorTuning;
     tuning::AutoTuner autoTuner;
     tuning::TuningMenu tuningMenu;
+    pros::task_t intakeScanTask = nullptr;
+    pros::task_t intakeSortTask = nullptr;
+    pros::task_t autonomousSafetyTask = nullptr;
 };
 
 } // namespace core

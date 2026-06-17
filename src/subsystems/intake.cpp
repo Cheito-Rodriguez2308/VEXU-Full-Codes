@@ -56,9 +56,6 @@ void Intake::update(bool hasPin, bool hasCup, bool manualOverride) {
         state = IntakeState::Hold;
     }
 
-    updateScan();
-    updateSort();
-
     if (robotIdentity == config::RobotIdentity::BigRobot) {
         updateBigRobot();
     } else {
@@ -135,6 +132,52 @@ void Intake::stopReleasing() {
     judgeMotors.move_velocity(0);
 }
 
+void Intake::scanTaskStep() {
+    if (!scanning || !objectDetected()) return;
+
+    // AON used scan as a helper to keep objects moving once detected.
+    if (robotIdentity == config::RobotIdentity::BigRobot) {
+        moveBigStore(intakeVelocity);
+    } else {
+        moveSmallStore(intakeVelocity);
+    }
+}
+
+void Intake::sortTaskStep() {
+    if (robotIdentity != config::RobotIdentity::BigRobot || !releasing) return;
+
+    const std::uint32_t now = pros::millis();
+    switch (sortState) {
+    case IntakeSortState::Idle:
+        if (seesRed() || seesBlue()) {
+            sortState = IntakeSortState::Kickback;
+            sortUntilMs = now + 250;
+            elevatorMotors.move_velocity(-intakeVelocity);
+            judgeMotors.move_velocity(0);
+        }
+        break;
+    case IntakeSortState::Kickback:
+        if (now >= sortUntilMs) {
+            sortState = IntakeSortState::Routing;
+            elevatorMotors.move_velocity(intakeVelocity * 2 / 3);
+            judgeMotors.move_velocity(scoreHeight == IntakeScoreHeight::Top ? intakeVelocity : -intakeVelocity);
+        }
+        break;
+    case IntakeSortState::Routing:
+        if (acceptSensor.get_value() || rejectSensor.get_value()) {
+            sortState = IntakeSortState::Settling;
+            sortUntilMs = now + 120;
+            judgeMotors.move_velocity(0);
+        }
+        break;
+    case IntakeSortState::Settling:
+        if (now >= sortUntilMs) {
+            sortState = IntakeSortState::Idle;
+        }
+        break;
+    }
+}
+
 void Intake::debug() const {
     logger.subsystemState("Intake", toString(state));
 }
@@ -175,52 +218,6 @@ void Intake::updateBigRobot() {
     case IntakeState::Hold:
         elevatorMotors.move_velocity(0);
         judgeMotors.move_velocity(0);
-        break;
-    }
-}
-
-void Intake::updateScan() {
-    if (!scanning || !objectDetected()) return;
-
-    // AON used scan as a helper to keep objects moving once detected.
-    if (robotIdentity == config::RobotIdentity::BigRobot) {
-        moveBigStore(intakeVelocity);
-    } else {
-        moveSmallStore(intakeVelocity);
-    }
-}
-
-void Intake::updateSort() {
-    if (robotIdentity != config::RobotIdentity::BigRobot || !releasing) return;
-
-    const std::uint32_t now = pros::millis();
-    switch (sortState) {
-    case IntakeSortState::Idle:
-        if (seesRed() || seesBlue()) {
-            sortState = IntakeSortState::Kickback;
-            sortUntilMs = now + 250;
-            elevatorMotors.move_velocity(-intakeVelocity);
-            judgeMotors.move_velocity(0);
-        }
-        break;
-    case IntakeSortState::Kickback:
-        if (now >= sortUntilMs) {
-            sortState = IntakeSortState::Routing;
-            elevatorMotors.move_velocity(intakeVelocity * 2 / 3);
-            judgeMotors.move_velocity(scoreHeight == IntakeScoreHeight::Top ? intakeVelocity : -intakeVelocity);
-        }
-        break;
-    case IntakeSortState::Routing:
-        if (acceptSensor.get_value() || rejectSensor.get_value()) {
-            sortState = IntakeSortState::Settling;
-            sortUntilMs = now + 120;
-            judgeMotors.move_velocity(0);
-        }
-        break;
-    case IntakeSortState::Settling:
-        if (now >= sortUntilMs) {
-            sortState = IntakeSortState::Idle;
-        }
         break;
     }
 }
