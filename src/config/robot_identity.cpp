@@ -3,12 +3,11 @@
 namespace config {
 
 const char* toString(RobotIdentity identity) {
-    return identity == RobotIdentity::RobotA ? "Robot A" : "Robot B";
+    return identity == RobotIdentity::BigRobot ? "BigRobot" : "SmallRobot";
 }
 
 RobotIdentity selectedRobot() {
-    // TODO: Set this per brain, or replace it with an SD-card/team selector.
-    return RobotIdentity::RobotA;
+    return USING_BIG_ROBOT ? RobotIdentity::BigRobot : RobotIdentity::SmallRobot;
 }
 
 } // namespace config

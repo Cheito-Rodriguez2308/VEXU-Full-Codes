@@ -3,26 +3,26 @@
 
 namespace config {
 
-const Ports& robotAPorts() {
+const Ports& smallRobotPorts() {
     static const Ports ports{
-        {{1, -2, 3}, {-4, 5, -6}, 7, 8, 9, 10}, // TODO: sample motor ports; negative ports mean reversed.
-        {11, 12, 13, 14, 15},                   // TODO: sample IMU/rotation/optical/distance ports.
-        {'A', 'B', 'C'}                         // TODO: sample ADI pneumatic ports.
+        {{11, -12, 13, -14}, {1, -2, 3, -4}, {}, {-9, -6, 7, -8}, 0, 0, 0},
+        {16, 19, 5, 17, 20},
+        {'H', 'B', 'A'}
     };
     return ports;
 }
 
-const Ports& robotBPorts() {
+const Ports& bigRobotPorts() {
     static const Ports ports{
-        {{-1, 2, -3}, {4, -5, 6}, 7, 8, 9, 10}, // TODO: sample Robot B motor ports.
-        {11, 12, 13, 14, 15},                   // TODO: sample Robot B sensor ports.
-        {'A', 'B', 'C'}                         // TODO: sample Robot B ADI ports.
+        {{12, -13, -18, 19}, {-1, 2, 3, -4}, {-15}, {20, -11, -10, 17}, 0, 0, 0},
+        {14, 5, 7, 16, 9},
+        {'G', 'H', 'D'}
     };
     return ports;
 }
 
 const Ports& activePorts() {
-    return selectedRobot() == RobotIdentity::RobotA ? robotAPorts() : robotBPorts();
+    return selectedRobot() == RobotIdentity::BigRobot ? bigRobotPorts() : smallRobotPorts();
 }
 
 } // namespace config

@@ -19,7 +19,8 @@ const char* toString(IntakeState state) {
     return "Unknown";
 }
 
-Intake::Intake(std::int8_t port, util::Logger& logger) : motor(port), logger(logger) {}
+Intake::Intake(std::initializer_list<std::int8_t> ports, util::Logger& logger)
+    : motors(ports), logger(logger) {}
 
 void Intake::initialize() {
     stop();
@@ -38,26 +39,26 @@ void Intake::update(bool hasPin, bool hasCup, bool manualOverride) {
 
     switch (state) {
     case IntakeState::Off:
-        motor.move_voltage(0);
+        motors.move_voltage(0);
         break;
     case IntakeState::IntakePin:
-        motor.move_voltage(config::mechanism::intakeVoltage);
+        motors.move_voltage(config::mechanism::intakeVoltage);
         break;
     case IntakeState::IntakeCup:
-        motor.move_voltage(config::mechanism::intakeVoltage);
+        motors.move_voltage(config::mechanism::intakeVoltage);
         break;
     case IntakeState::Outtake:
-        motor.move_voltage(config::mechanism::outtakeVoltage);
+        motors.move_voltage(config::mechanism::outtakeVoltage);
         break;
     case IntakeState::Hold:
-        motor.move_voltage(config::mechanism::holdVoltage);
+        motors.move_voltage(config::mechanism::holdVoltage);
         break;
     }
 }
 
 void Intake::stop() {
     state = IntakeState::Off;
-    motor.brake();
+    motors.brake();
 }
 
 void Intake::setState(IntakeState nextState) {

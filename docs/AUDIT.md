@@ -18,7 +18,7 @@ them on the current build.
 - Required classes exist for Robot, Drivetrain, Intake, PinMechanism,
   CupMechanism, ToggleMechanism, Sensors, DriverControl, AutonSelector,
   AutonActions, tuning modules, Logger, and config.
-- Robot A and Robot B share config types instead of duplicated code.
+- SmallRobot and BigRobot share config types instead of duplicated code.
 
 ## Needs Rechecking For Override
 

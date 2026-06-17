@@ -46,8 +46,8 @@ struct RobotConfig {
     PidConfig pid;
 };
 
-const RobotConfig& robotAConfig();
-const RobotConfig& robotBConfig();
+const RobotConfig& smallRobotConfig();
+const RobotConfig& bigRobotConfig();
 const RobotConfig& activeRobotConfig();
 
 } // namespace config

@@ -56,7 +56,7 @@ point only; verify them on the current Override build before trusting auton.
 - All motor ports and reversed signs.
 - Gear cartridges and external drive gear ratios.
 - Drive wheel diameter, track width, drivetrain RPM, and horizontal drift.
-- IMU port for Robot A and Robot B.
+- IMU ports for SmallRobot and BigRobot.
 - Tracking wheel sensor ports, wheel size, gear ratio, offsets, and direction.
 - Intake, pin, cup, toggle, and pneumatic ports.
 - Optical, distance, and rotation sensor ports and thresholds.

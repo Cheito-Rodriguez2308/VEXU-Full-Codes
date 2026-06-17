@@ -8,7 +8,8 @@ namespace config {
 struct MotorPorts {
     std::initializer_list<std::int8_t> leftDrive;
     std::initializer_list<std::int8_t> rightDrive;
-    std::int8_t intake;
+    std::initializer_list<std::int8_t> centerDrive;
+    std::initializer_list<std::int8_t> intake;
     std::int8_t pin;
     std::int8_t cup;
     std::int8_t toggle;
@@ -34,8 +35,8 @@ struct Ports {
     AdiPorts adi;
 };
 
-const Ports& robotAPorts();
-const Ports& robotBPorts();
+const Ports& smallRobotPorts();
+const Ports& bigRobotPorts();
 const Ports& activePorts();
 
 } // namespace config
