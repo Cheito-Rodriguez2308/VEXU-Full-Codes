@@ -46,13 +46,7 @@ void Robot::initialize() {
 
 void Robot::disabled() {
     matchState.setMode(MatchMode::Disabled);
-    intake.stopScan();
-    intake.stopReleasing();
-    drivetrain.stop();
-    intake.stop();
-    pin.stop();
-    cup.stop();
-    toggle.stop();
+    stopRobotOutputs();
 }
 
 void Robot::competitionInitialize() {
@@ -127,6 +121,13 @@ void Robot::autonomousSafetyStep() {
     if (matchState.mode() != MatchMode::Autonomous) return;
     if (!controller.get_digital(pros::E_CONTROLLER_DIGITAL_X)) return;
 
+    stopRobotOutputs();
+    logger.warn("Auton safety stop");
+}
+
+void Robot::stopRobotOutputs() {
+    // AON's old safety also stopped ORBIT. This codebase does not have an
+    // orbit subsystem yet, so all owned outputs stop here.
     drivetrain.stop();
     intake.stopScan();
     intake.stopReleasing();
@@ -134,7 +135,6 @@ void Robot::autonomousSafetyStep() {
     pin.stop();
     cup.stop();
     toggle.stop();
-    logger.warn("Auton safety stop");
 }
 
 void Robot::configureForMatch(bool opcontrol) {

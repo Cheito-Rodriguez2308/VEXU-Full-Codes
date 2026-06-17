@@ -38,6 +38,7 @@ class Robot {
   private:
     void startBackgroundTasks();
     void autonomousSafetyStep();
+    void stopRobotOutputs();
     void configureForMatch(bool opcontrol);
     void updateDashboard();
 
