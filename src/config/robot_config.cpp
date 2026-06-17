@@ -38,6 +38,7 @@ const RobotConfig& smallRobotConfig() {
             3.250
         },
         {
+            DriveKind::Differential,
             pros::E_MOTOR_GEARSET_06,
             12.5,
             2.75,
@@ -85,6 +86,7 @@ const RobotConfig& bigRobotConfig() {
             3.250
         },
         {
+            DriveKind::HDrive,
             pros::E_MOTOR_GEARSET_06,
             15.5,
             3.25,

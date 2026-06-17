@@ -42,6 +42,12 @@ void DriverControl::updateDrive() {
     const int leftX = curve.limit(curve.steer(controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X)), precision);
     const int rightX = curve.limit(curve.steer(controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X)), precision);
 
+    if (drivetrain.driveKind() == config::DriveKind::HDrive) {
+        // BigRobot uses the left stick for forward/strafe and the right stick for turn.
+        drivetrain.hDrive(leftY, rightX, leftX);
+        return;
+    }
+
     switch (profile.mode) {
     case DriveMode::Tank:
         drivetrain.tank(leftY, rightY);

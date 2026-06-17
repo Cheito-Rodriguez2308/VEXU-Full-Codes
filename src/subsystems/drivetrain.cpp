@@ -1,5 +1,6 @@
 #include "subsystems/drivetrain.hpp"
 #include "pros/rtos.hpp"
+#include <algorithm>
 #include <cmath>
 
 namespace subsystems {
@@ -9,10 +10,17 @@ static std::int8_t rotationPortWithDirection(std::int8_t port, bool reversed) {
     return reversed ? static_cast<std::int8_t>(-absolutePort) : absolutePort;
 }
 
+static int joystickToVoltage(int input) {
+    const int clipped = std::clamp(input, -127, 127);
+    return clipped * 12000 / 127;
+}
+
 Drivetrain::Drivetrain(const config::RobotConfig& config, util::Logger& logger)
-    : logger(logger),
+    : kind(config.drive.kind),
+      logger(logger),
       leftMotors(config.ports.motors.leftDrive),
       rightMotors(config.ports.motors.rightDrive),
+      centerMotors(config.ports.motors.centerDrive),
       imu(config.ports.sensors.imu),
       leftVerticalRotation(rotationPortWithDirection(config.ports.sensors.leftVerticalRotation,
                                                      config.drive.tracking.leftVerticalReversed)),
@@ -51,7 +59,7 @@ Drivetrain::Drivetrain(const config::RobotConfig& config, util::Logger& logger)
                     &steerCurve) {}
 
 void Drivetrain::initialize() {
-    logger.info("Calibrating LemLib chassis");
+    logger.info(kind == config::DriveKind::HDrive ? "Calibrating H-drive odom" : "Calibrating LemLib chassis");
     lemlibChassis.calibrate();
     lemlibChassis.setPose(0, 0, 0); // TODO: set the actual auton starting pose.
 }
@@ -61,6 +69,7 @@ void Drivetrain::update() {}
 void Drivetrain::stop() {
     leftMotors.brake();
     rightMotors.brake();
+    centerMotors.brake();
 }
 
 void Drivetrain::debug() const {
@@ -79,16 +88,42 @@ lemlib::Pose Drivetrain::pose() const {
     return const_cast<Drivetrain*>(this)->lemlibChassis.getPose();
 }
 
+config::DriveKind Drivetrain::driveKind() const {
+    return kind;
+}
+
 void Drivetrain::tank(int left, int right) {
+    if (kind == config::DriveKind::HDrive) {
+        setTankVoltage(joystickToVoltage(left), joystickToVoltage(right));
+        setStrafeVoltage(0);
+        return;
+    }
     lemlibChassis.tank(left, right);
 }
 
 void Drivetrain::arcade(int throttle, int turn, float desaturateBias) {
+    if (kind == config::DriveKind::HDrive) {
+        hDrive(throttle, turn, 0);
+        return;
+    }
     lemlibChassis.arcade(throttle, turn, false, desaturateBias);
 }
 
 void Drivetrain::curvature(int throttle, int turn) {
+    if (kind == config::DriveKind::HDrive) {
+        hDrive(throttle, turn, 0);
+        return;
+    }
     lemlibChassis.curvature(throttle, turn);
+}
+
+void Drivetrain::hDrive(int throttle, int turn, int strafe) {
+    const int leftVoltage = joystickToVoltage(throttle + turn);
+    const int rightVoltage = joystickToVoltage(throttle - turn);
+    const int strafeVoltage = joystickToVoltage(strafe);
+
+    setTankVoltage(leftVoltage, rightVoltage);
+    setStrafeVoltage(strafeVoltage);
 }
 
 void Drivetrain::moveToPoint(const std::string& name,
@@ -98,6 +133,9 @@ void Drivetrain::moveToPoint(const std::string& name,
                              lemlib::MoveToPointParams params,
                              bool async) {
     logger.autonStep(name.c_str());
+    if (kind == config::DriveKind::HDrive) {
+        logger.warn("H-drive moveToPoint uses LemLib left/right only; sideways motor is not part of this motion");
+    }
     const std::uint32_t startMs = pros::millis();
     // moveToPoint is usually faster when final heading does not matter. earlyExitRange is in inches for chaining.
     lemlibChassis.moveToPoint(x, y, timeout, params, async);
@@ -117,6 +155,9 @@ void Drivetrain::moveToPose(const std::string& name,
                             lemlib::MoveToPoseParams params,
                             bool async) {
     logger.autonStep(name.c_str());
+    if (kind == config::DriveKind::HDrive) {
+        logger.warn("H-drive moveToPose uses LemLib left/right only; strafe is driver-control only for now");
+    }
     const std::uint32_t startMs = pros::millis();
     // moveToPose uses LemLib's boomerang-style controller. lead changes how wide the turn is.
     // horizontalDrift affects motion while turning; retune it after wheel changes.
@@ -224,7 +265,19 @@ double Drivetrain::hottestDriveMotorCelsius() const {
     for (double temperature : rightMotors.get_temperature_all()) {
         if (temperature > hottest) hottest = temperature;
     }
+    for (double temperature : centerMotors.get_temperature_all()) {
+        if (temperature > hottest) hottest = temperature;
+    }
     return hottest;
+}
+
+void Drivetrain::setTankVoltage(int left, int right) {
+    leftMotors.move_voltage(left);
+    rightMotors.move_voltage(right);
+}
+
+void Drivetrain::setStrafeVoltage(int strafe) {
+    centerMotors.move_voltage(strafe);
 }
 
 } // namespace subsystems

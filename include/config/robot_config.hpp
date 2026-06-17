@@ -10,6 +10,11 @@
 
 namespace config {
 
+enum class DriveKind {
+    Differential,
+    HDrive
+};
+
 // Tracking wheel geometry. Direction tests come before PID tuning.
 struct TrackingConfig {
     double wheelDiameter;
@@ -24,6 +29,7 @@ struct TrackingConfig {
 
 // Drivetrain measurements passed into LemLib.
 struct DriveConfig {
+    DriveKind kind;
     pros::motor_gearset_e_t gearset;
     double trackWidth;
     double wheelDiameter;

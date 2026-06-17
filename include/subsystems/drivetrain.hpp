@@ -25,10 +25,12 @@ class Drivetrain {
     lemlib::Chassis& chassis();
     const lemlib::Chassis& chassis() const;
     lemlib::Pose pose() const;
+    config::DriveKind driveKind() const;
 
     void tank(int left, int right);
     void arcade(int throttle, int turn, float desaturateBias);
     void curvature(int throttle, int turn);
+    void hDrive(int throttle, int turn, int strafe);
 
     void moveToPoint(const std::string& name,
                      double x,
@@ -84,9 +86,14 @@ class Drivetrain {
     double hottestDriveMotorCelsius() const;
 
   private:
+    void setTankVoltage(int left, int right);
+    void setStrafeVoltage(int strafe);
+
+    config::DriveKind kind;
     util::Logger& logger;
     pros::MotorGroup leftMotors;
     pros::MotorGroup rightMotors;
+    pros::MotorGroup centerMotors;
     pros::Imu imu;
     pros::Rotation leftVerticalRotation;
     pros::Rotation rightVerticalRotation;
