@@ -64,6 +64,30 @@ void Drivetrain::initialize() {
     lemlibChassis.setPose(0, 0, 0); // TODO: set the actual auton starting pose.
 }
 
+void Drivetrain::configureForMatch(bool opcontrol, double maxAccel) {
+    const pros::motor_brake_mode_e_t brakeMode = opcontrol ? pros::E_MOTOR_BRAKE_BRAKE : pros::E_MOTOR_BRAKE_HOLD;
+    configuredMaxAccel = maxAccel;
+
+    leftMotors.set_brake_mode_all(brakeMode);
+    rightMotors.set_brake_mode_all(brakeMode);
+    centerMotors.set_brake_mode_all(brakeMode);
+
+    leftMotors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
+    rightMotors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
+    centerMotors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
+
+    leftMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
+    rightMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
+    centerMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
+
+    leftMotors.tare_position_all();
+    rightMotors.tare_position_all();
+    centerMotors.tare_position_all();
+
+    lemlibChassis.setBrakeMode(brakeMode);
+    logger.info(opcontrol ? "Drive brake mode: brake" : "Drive brake mode: hold");
+}
+
 void Drivetrain::update() {}
 
 void Drivetrain::stop() {

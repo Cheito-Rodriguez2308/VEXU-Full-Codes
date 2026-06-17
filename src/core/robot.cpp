@@ -32,6 +32,7 @@ void Robot::initialize() {
     logger.info(std::string("Initializing ") + config::toString(config.identity));
     drivetrain.initialize();
     intake.initialize();
+    configureForMatch(true);
     pin.initialize();
     cup.initialize();
     toggle.initialize();
@@ -67,12 +68,14 @@ void Robot::competitionInitialize() {
 void Robot::autonomous() {
     matchState.setMode(MatchMode::Autonomous);
     logger.info("VEX U autonomous: 30 seconds available");
+    configureForMatch(false);
     intake.startScan();
     autonSelector.runSelected();
 }
 
 void Robot::opcontrol() {
     logger.info("VEX U driver control: 90 seconds available");
+    configureForMatch(true);
     intake.startScan();
 
     while (true) {
@@ -132,6 +135,14 @@ void Robot::autonomousSafetyStep() {
     cup.stop();
     toggle.stop();
     logger.warn("Auton safety stop");
+}
+
+void Robot::configureForMatch(bool opcontrol) {
+    const double driveMaxAccel =
+        config.identity == config::RobotIdentity::BigRobot ? config.aon.maxAccel * 0.4 : config.aon.maxAccel;
+
+    drivetrain.configureForMatch(opcontrol, driveMaxAccel);
+    intake.configureForMatch(opcontrol);
 }
 
 void Robot::updateDashboard() {

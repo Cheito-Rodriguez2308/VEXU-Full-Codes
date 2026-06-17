@@ -41,6 +41,7 @@ class Intake {
     Intake(const config::RobotConfig& config, util::Logger& logger);
 
     void initialize();
+    void configureForMatch(bool opcontrol);
     void update(bool hasPin, bool hasCup, bool manualOverride);
     void stop();
     void setState(IntakeState nextState);

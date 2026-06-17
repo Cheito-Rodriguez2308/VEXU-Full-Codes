@@ -18,6 +18,7 @@ class Drivetrain {
     Drivetrain(const config::RobotConfig& config, util::Logger& logger);
 
     void initialize();
+    void configureForMatch(bool opcontrol, double maxAccel);
     void update();
     void stop();
     void debug() const;
@@ -90,6 +91,7 @@ class Drivetrain {
     void setStrafeVoltage(int strafe);
 
     config::DriveKind kind;
+    double configuredMaxAccel = 0.0;
     util::Logger& logger;
     pros::MotorGroup leftMotors;
     pros::MotorGroup rightMotors;

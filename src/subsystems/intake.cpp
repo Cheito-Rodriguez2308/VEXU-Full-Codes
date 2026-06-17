@@ -46,6 +46,37 @@ void Intake::initialize() {
     logger.subsystemState("Intake", toString(state));
 }
 
+void Intake::configureForMatch(bool) {
+    const bool bigRobot = robotIdentity == config::RobotIdentity::BigRobot;
+    const pros::motor_brake_mode_e_t brakeMode = bigRobot ? pros::E_MOTOR_BRAKE_BRAKE : pros::E_MOTOR_BRAKE_COAST;
+
+    corridorMotors.set_brake_mode_all(brakeMode);
+    elevatorMotors.set_brake_mode_all(brakeMode);
+    judgeMotors.set_brake_mode_all(brakeMode);
+    scorerMotors.set_brake_mode_all(brakeMode);
+
+    corridorMotors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
+    elevatorMotors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
+    judgeMotors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
+    scorerMotors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
+
+    corridorMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
+    elevatorMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
+    judgeMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
+    scorerMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
+
+    corridorMotors.tare_position_all();
+    elevatorMotors.tare_position_all();
+    judgeMotors.tare_position_all();
+    scorerMotors.tare_position_all();
+
+    if (!bigRobot) {
+        stopScan();
+    }
+
+    logger.info(bigRobot ? "Intake brake mode: brake" : "Intake brake mode: coast");
+}
+
 void Intake::update(bool hasPin, bool hasCup, bool manualOverride) {
     const bool alreadyHasRequestedObject =
         (state == IntakeState::IntakePin && hasPin) ||
