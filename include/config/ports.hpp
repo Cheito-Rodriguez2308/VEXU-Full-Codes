@@ -17,7 +17,8 @@ struct MotorPorts {
 
 struct SensorPorts {
     std::int8_t imu;
-    std::int8_t verticalRotation;
+    std::int8_t leftVerticalRotation;
+    std::int8_t rightVerticalRotation;
     std::int8_t horizontalRotation;
     std::int8_t optical;
     std::int8_t distance;

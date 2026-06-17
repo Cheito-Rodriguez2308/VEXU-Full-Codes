@@ -14,9 +14,11 @@ namespace config {
 struct TrackingConfig {
     double wheelDiameter;
     double gearRatio;
-    double verticalOffset;
+    double leftVerticalOffset;
+    double rightVerticalOffset;
     double horizontalOffset;
-    bool verticalReversed;
+    bool leftVerticalReversed;
+    bool rightVerticalReversed;
     bool horizontalReversed;
 };
 
@@ -28,6 +30,29 @@ struct DriveConfig {
     double drivetrainRpm;
     double horizontalDrift;
     TrackingConfig tracking;
+};
+
+// AON constants we keep around even when LemLib does not use them directly.
+struct AonRobotConstants {
+    double driveWheelDiameter;
+    double trackingWheelDiameter;
+    double distanceLeftTrackingWheelCenter;
+    double distanceRightTrackingWheelCenter;
+    double distanceBackTrackingWheelCenter;
+    double motorToDriveRatio;
+    double driveWidth;
+    double driveLength;
+    double maxRpm;
+    double maxAccel;
+    double maxDecel;
+    double intakeVelocity;
+    double sensitivity;
+    double intakeActivationDistance;
+    bool gyroEnabled;
+    double gyroConfidence;
+    int gyroFilterLength;
+    double encoderConfidence;
+    double offsetXEncoderMid;
 };
 
 struct PidConfig {
@@ -42,6 +67,7 @@ struct PidConfig {
 struct RobotConfig {
     RobotIdentity identity;
     Ports ports;
+    AonRobotConstants aon;
     DriveConfig drive;
     PidConfig pid;
 };

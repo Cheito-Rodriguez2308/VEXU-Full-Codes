@@ -88,9 +88,11 @@ class Drivetrain {
     pros::MotorGroup leftMotors;
     pros::MotorGroup rightMotors;
     pros::Imu imu;
-    pros::Rotation verticalRotation;
+    pros::Rotation leftVerticalRotation;
+    pros::Rotation rightVerticalRotation;
     pros::Rotation horizontalRotation;
-    lemlib::TrackingWheel verticalTrackingWheel;
+    lemlib::TrackingWheel leftVerticalTrackingWheel;
+    lemlib::TrackingWheel rightVerticalTrackingWheel;
     lemlib::TrackingWheel horizontalTrackingWheel;
     lemlib::Drivetrain drivetrain;
     lemlib::OdomSensors odomSensors;

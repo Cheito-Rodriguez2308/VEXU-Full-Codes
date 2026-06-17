@@ -14,14 +14,20 @@ Drivetrain::Drivetrain(const config::RobotConfig& config, util::Logger& logger)
       leftMotors(config.ports.motors.leftDrive),
       rightMotors(config.ports.motors.rightDrive),
       imu(config.ports.sensors.imu),
-      verticalRotation(rotationPortWithDirection(config.ports.sensors.verticalRotation,
-                                                 config.drive.tracking.verticalReversed)),
+      leftVerticalRotation(rotationPortWithDirection(config.ports.sensors.leftVerticalRotation,
+                                                     config.drive.tracking.leftVerticalReversed)),
+      rightVerticalRotation(rotationPortWithDirection(config.ports.sensors.rightVerticalRotation,
+                                                      config.drive.tracking.rightVerticalReversed)),
       horizontalRotation(rotationPortWithDirection(config.ports.sensors.horizontalRotation,
                                                    config.drive.tracking.horizontalReversed)),
-      verticalTrackingWheel(&verticalRotation,
-                            config.drive.tracking.wheelDiameter,
-                            config.drive.tracking.verticalOffset,
-                            config.drive.tracking.gearRatio),
+      leftVerticalTrackingWheel(&leftVerticalRotation,
+                                config.drive.tracking.wheelDiameter,
+                                config.drive.tracking.leftVerticalOffset,
+                                config.drive.tracking.gearRatio),
+      rightVerticalTrackingWheel(&rightVerticalRotation,
+                                 config.drive.tracking.wheelDiameter,
+                                 config.drive.tracking.rightVerticalOffset,
+                                 config.drive.tracking.gearRatio),
       horizontalTrackingWheel(&horizontalRotation,
                               config.drive.tracking.wheelDiameter,
                               config.drive.tracking.horizontalOffset,
@@ -32,7 +38,7 @@ Drivetrain::Drivetrain(const config::RobotConfig& config, util::Logger& logger)
                  config.drive.wheelDiameter,
                  config.drive.drivetrainRpm,
                  config.drive.horizontalDrift),
-      odomSensors(&verticalTrackingWheel, nullptr, &horizontalTrackingWheel, nullptr, &imu),
+      odomSensors(&leftVerticalTrackingWheel, &rightVerticalTrackingWheel, &horizontalTrackingWheel, nullptr, &imu),
       lateralController(config.pid.lateral),
       angularController(config.pid.angular),
       throttleCurve(5, 12, 1.132), // TODO: driver curve values.
@@ -199,7 +205,7 @@ bool Drivetrain::isInMotion() const {
 }
 
 double Drivetrain::verticalTrackingInches() {
-    return verticalTrackingWheel.getDistanceTraveled();
+    return leftVerticalTrackingWheel.getDistanceTraveled();
 }
 
 double Drivetrain::horizontalTrackingInches() {
