@@ -3,9 +3,9 @@
 // Intake is a state machine. Driver control and autonomous request states;
 // this class decides the motor behavior for each state.
 
+#include "config/ports.hpp"
 #include "pros/motor_group.hpp"
 #include "util/logger.hpp"
-#include <initializer_list>
 
 namespace subsystems {
 
@@ -21,7 +21,7 @@ const char* toString(IntakeState state);
 
 class Intake {
   public:
-    Intake(std::initializer_list<std::int8_t> ports, util::Logger& logger);
+    Intake(const config::IntakePorts& ports, util::Logger& logger);
 
     void initialize();
     void update(bool hasPin, bool hasCup, bool manualOverride);
@@ -31,7 +31,13 @@ class Intake {
     void debug() const;
 
   private:
-    pros::MotorGroup motors;
+    void moveAll(int voltage);
+    void moveStorePath(int voltage);
+
+    pros::MotorGroup corridorMotors;
+    pros::MotorGroup elevatorMotors;
+    pros::MotorGroup judgeMotors;
+    pros::MotorGroup scorerMotors;
     util::Logger& logger;
     IntakeState state = IntakeState::Off;
 };

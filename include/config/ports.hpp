@@ -9,10 +9,23 @@ struct MotorPorts {
     std::initializer_list<std::int8_t> leftDrive;
     std::initializer_list<std::int8_t> rightDrive;
     std::initializer_list<std::int8_t> centerDrive;
-    std::initializer_list<std::int8_t> intake;
     std::int8_t pin;
     std::int8_t cup;
     std::int8_t toggle;
+};
+
+struct IntakePorts {
+    std::initializer_list<std::int8_t> corridor;
+    std::initializer_list<std::int8_t> elevator;
+    std::initializer_list<std::int8_t> judge;
+    std::initializer_list<std::int8_t> scorer;
+    char scorerPiston;
+    char cartPiston;
+    char trapdoorPiston;
+    std::int8_t distanceSensor;
+    std::int8_t opticalSensor;
+    char acceptSensor;
+    char rejectSensor;
 };
 
 struct SensorPorts {
@@ -20,18 +33,17 @@ struct SensorPorts {
     std::int8_t leftVerticalRotation;
     std::int8_t rightVerticalRotation;
     std::int8_t horizontalRotation;
-    std::int8_t optical;
-    std::int8_t distance;
 };
 
 struct AdiPorts {
-    char pinPiston;
-    char cupPiston;
-    char clampPiston;
+    char arrowPiston;
+    char brooksPiston;
+    char semPiston;
 };
 
 struct Ports {
     MotorPorts motors;
+    IntakePorts intake;
     SensorPorts sensors;
     AdiPorts adi;
 };

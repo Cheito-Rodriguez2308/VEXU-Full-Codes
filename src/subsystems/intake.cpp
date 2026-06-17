@@ -19,8 +19,12 @@ const char* toString(IntakeState state) {
     return "Unknown";
 }
 
-Intake::Intake(std::initializer_list<std::int8_t> ports, util::Logger& logger)
-    : motors(ports), logger(logger) {}
+Intake::Intake(const config::IntakePorts& ports, util::Logger& logger)
+    : corridorMotors(ports.corridor),
+      elevatorMotors(ports.elevator),
+      judgeMotors(ports.judge),
+      scorerMotors(ports.scorer),
+      logger(logger) {}
 
 void Intake::initialize() {
     stop();
@@ -39,26 +43,33 @@ void Intake::update(bool hasPin, bool hasCup, bool manualOverride) {
 
     switch (state) {
     case IntakeState::Off:
-        motors.move_voltage(0);
+        moveAll(0);
         break;
     case IntakeState::IntakePin:
-        motors.move_voltage(config::mechanism::intakeVoltage);
+        moveStorePath(config::mechanism::intakeVoltage);
         break;
     case IntakeState::IntakeCup:
-        motors.move_voltage(config::mechanism::intakeVoltage);
+        moveStorePath(config::mechanism::intakeVoltage);
         break;
     case IntakeState::Outtake:
-        motors.move_voltage(config::mechanism::outtakeVoltage);
+        moveAll(config::mechanism::outtakeVoltage);
         break;
     case IntakeState::Hold:
-        motors.move_voltage(config::mechanism::holdVoltage);
+        elevatorMotors.move_voltage(config::mechanism::holdVoltage);
+        corridorMotors.move_voltage(0);
+        judgeMotors.move_voltage(0);
+        scorerMotors.move_voltage(0);
         break;
     }
 }
 
 void Intake::stop() {
     state = IntakeState::Off;
-    motors.brake();
+    moveAll(0);
+    corridorMotors.brake();
+    elevatorMotors.brake();
+    judgeMotors.brake();
+    scorerMotors.brake();
 }
 
 void Intake::setState(IntakeState nextState) {
@@ -74,6 +85,22 @@ IntakeState Intake::getState() const {
 
 void Intake::debug() const {
     logger.subsystemState("Intake", toString(state));
+}
+
+void Intake::moveAll(int voltage) {
+    corridorMotors.move_voltage(voltage);
+    elevatorMotors.move_voltage(voltage);
+    judgeMotors.move_voltage(voltage);
+    scorerMotors.move_voltage(voltage);
+}
+
+void Intake::moveStorePath(int voltage) {
+    // AON's robots do not share one intake layout. These are the motors that
+    // usually move objects inward without forcing scorer/judge behavior.
+    corridorMotors.move_voltage(voltage);
+    elevatorMotors.move_voltage(voltage);
+    judgeMotors.move_voltage(0);
+    scorerMotors.move_voltage(0);
 }
 
 } // namespace subsystems
