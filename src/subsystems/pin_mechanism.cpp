@@ -20,7 +20,9 @@ const char* toString(PinMechanismState state) {
 }
 
 PinMechanism::PinMechanism(std::int8_t motorPort, char pistonPort, util::Logger& logger)
-    : motor(motorPort), piston(pistonPort), logger(logger) {}
+    : motor(motorPort == 0 ? nullptr : std::make_unique<pros::Motor>(motorPort)),
+      piston(pistonPort),
+      logger(logger) {}
 
 void PinMechanism::initialize() {
     piston.set_value(false);
@@ -30,30 +32,30 @@ void PinMechanism::initialize() {
 void PinMechanism::update() {
     switch (state) {
     case PinMechanismState::Idle:
-        motor.move_voltage(0);
+        if (motor) motor->move_voltage(0);
         break;
     case PinMechanismState::Grab:
         piston.set_value(true);
-        motor.move_voltage(config::mechanism::grabVoltage);
+        if (motor) motor->move_voltage(config::mechanism::grabVoltage);
         break;
     case PinMechanismState::Hold:
         piston.set_value(true);
-        motor.move_voltage(config::mechanism::holdVoltage);
+        if (motor) motor->move_voltage(config::mechanism::holdVoltage);
         break;
     case PinMechanismState::Score:
         piston.set_value(true);
-        motor.move_voltage(config::mechanism::scoreVoltage);
+        if (motor) motor->move_voltage(config::mechanism::scoreVoltage);
         break;
     case PinMechanismState::Release:
         piston.set_value(false);
-        motor.move_voltage(config::mechanism::releaseVoltage);
+        if (motor) motor->move_voltage(config::mechanism::releaseVoltage);
         break;
     }
 }
 
 void PinMechanism::stop() {
     state = PinMechanismState::Idle;
-    motor.brake();
+    if (motor) motor->brake();
 }
 
 void PinMechanism::setState(PinMechanismState nextState) {

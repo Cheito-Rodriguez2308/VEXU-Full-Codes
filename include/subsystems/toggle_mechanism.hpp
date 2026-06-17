@@ -5,6 +5,7 @@
 
 #include "pros/motors.hpp"
 #include "util/logger.hpp"
+#include <memory>
 
 namespace subsystems {
 
@@ -29,7 +30,7 @@ class ToggleMechanism {
     void debug() const;
 
   private:
-    pros::Motor motor;
+    std::unique_ptr<pros::Motor> motor;
     util::Logger& logger;
     ToggleMechanismState state = ToggleMechanismState::Idle;
 };

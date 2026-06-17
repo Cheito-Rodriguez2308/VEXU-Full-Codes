@@ -1,7 +1,7 @@
 #pragma once
 
 // Robot configuration describes measured hardware, not behavior.
-// Replace TODO-marked measurements here before real robot testing.
+// AON-derived values live here so SmallRobot and BigRobot stay separate.
 
 #include "config/ports.hpp"
 #include "config/robot_identity.hpp"

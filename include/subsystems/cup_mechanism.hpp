@@ -6,6 +6,7 @@
 #include "pros/adi.hpp"
 #include "pros/motors.hpp"
 #include "util/logger.hpp"
+#include <memory>
 
 namespace subsystems {
 
@@ -30,7 +31,7 @@ class CupMechanism {
     void debug() const;
 
   private:
-    pros::Motor motor;
+    std::unique_ptr<pros::Motor> motor;
     pros::adi::DigitalOut piston;
     util::Logger& logger;
     CupMechanismState state = CupMechanismState::Idle;

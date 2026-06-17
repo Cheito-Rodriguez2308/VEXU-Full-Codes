@@ -10,6 +10,7 @@
 #include "pros/motor_group.hpp"
 #include "pros/optical.hpp"
 #include "util/logger.hpp"
+#include <memory>
 
 namespace subsystems {
 
@@ -69,7 +70,7 @@ class Intake {
     void moveSmallReject(int rpm);
     void moveBigStore(int rpm);
     void moveBigScore(IntakeScoreHeight height);
-    void setPiston(pros::adi::DigitalOut& piston, bool value);
+    void setPiston(std::unique_ptr<pros::adi::DigitalOut>& piston, bool value);
     bool objectDetected();
     bool seesRed();
     bool seesBlue();
@@ -81,11 +82,11 @@ class Intake {
     pros::MotorGroup elevatorMotors;
     pros::MotorGroup judgeMotors;
     pros::MotorGroup scorerMotors;
-    pros::adi::DigitalOut scorerPiston;
-    pros::adi::DigitalOut cartPiston;
-    pros::adi::DigitalOut trapdoorPiston;
-    pros::adi::DigitalIn acceptSensor;
-    pros::adi::DigitalIn rejectSensor;
+    std::unique_ptr<pros::adi::DigitalOut> scorerPiston;
+    std::unique_ptr<pros::adi::DigitalOut> cartPiston;
+    std::unique_ptr<pros::adi::DigitalOut> trapdoorPiston;
+    std::unique_ptr<pros::adi::DigitalIn> acceptSensor;
+    std::unique_ptr<pros::adi::DigitalIn> rejectSensor;
     pros::Distance distanceSensor;
     pros::Optical opticalSensor;
     util::Logger& logger;

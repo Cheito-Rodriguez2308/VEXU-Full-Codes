@@ -2,8 +2,8 @@
 
 PROS C++ + LemLib code for our VEX U Override robots.
 
-We use this branch for testing and cleanup. Some values are still marked `TODO`
-because we need to measure them on the actual robot before serious driving.
+We use this branch for testing and cleanup. AON robot values have been ported,
+but they still need a careful recheck on the current build before serious driving.
 
 ## Code Map
 
@@ -39,7 +39,7 @@ who is allowed to command it?
 2. Clone this repo.
 3. Build once before editing so toolchain issues are separate from code issues.
 4. Read `include/config/README.md`, then `include/core/README.md`.
-5. Replace only one category of `TODO` values at a time.
+5. Recheck only one category of robot values at a time.
 6. Test on blocks before field testing.
 
 ## Branch Workflow
@@ -136,5 +136,5 @@ look before changing PID.
 - Changing PID before verifying motor and sensor directions.
 - Using final autonomous coordinates before odometry is trustworthy.
 - Adding controller button logic inside subsystem classes.
-- Leaving robot-specific values without `TODO`.
+- Changing robot-specific values without explaining where they came from.
 - Treating the public `main` branch as a testing branch.

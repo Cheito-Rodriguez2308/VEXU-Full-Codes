@@ -48,21 +48,21 @@ void AutonActions::followPath(const char* name, const asset& path, double lookah
 void AutonActions::scorePin() {
     logger.autonStep("scorePin");
     pin.setState(subsystems::PinMechanismState::Score);
-    pros::delay(350); // TODO: replace with measured score timing.
+    pros::delay(350); // Replace with measured score timing after mechanism testing.
     sensors.setHasPin(false);
 }
 
 void AutonActions::scoreCup() {
     logger.autonStep("scoreCup");
     cup.setState(subsystems::CupMechanismState::Stack);
-    pros::delay(350); // TODO: retest with a loaded cup.
+    pros::delay(350); // Retest with a loaded cup.
     sensors.setHasCup(false);
 }
 
 void AutonActions::setToggle(subsystems::ToggleMechanismState state) {
     logger.autonStep("setToggle");
     toggle.setState(state);
-    pros::delay(250); // TODO: temporary timing until the toggle is on the robot.
+    pros::delay(250); // Temporary timing until the toggle is on the robot.
 }
 
 void AutonActions::startIntakeScan() {

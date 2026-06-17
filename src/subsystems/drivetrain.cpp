@@ -49,8 +49,8 @@ Drivetrain::Drivetrain(const config::RobotConfig& config, util::Logger& logger)
       odomSensors(&leftVerticalTrackingWheel, &rightVerticalTrackingWheel, &horizontalTrackingWheel, nullptr, &imu),
       lateralController(config.pid.lateral),
       angularController(config.pid.angular),
-      throttleCurve(5, 12, 1.132), // TODO: driver curve values.
-      steerCurve(5, 12, 1.132),    // TODO: driver curve values.
+      throttleCurve(5, 12, 1.132), // AON-style driver curve starting point.
+      steerCurve(5, 12, 1.132),    // AON-style driver curve starting point.
       lemlibChassis(drivetrain,
                     lateralController,
                     angularController,
@@ -61,7 +61,7 @@ Drivetrain::Drivetrain(const config::RobotConfig& config, util::Logger& logger)
 void Drivetrain::initialize() {
     logger.info(kind == config::DriveKind::HDrive ? "Calibrating H-drive odom" : "Calibrating LemLib chassis");
     lemlibChassis.calibrate();
-    lemlibChassis.setPose(0, 0, 0); // TODO: set the actual auton starting pose.
+    lemlibChassis.setPose(0, 0, 0); // Bench default; auton routines can reset pose before running.
 }
 
 void Drivetrain::configureForMatch(bool opcontrol, double maxAccel) {

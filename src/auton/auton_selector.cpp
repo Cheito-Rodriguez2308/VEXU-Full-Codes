@@ -45,7 +45,7 @@ void AutonSelector::initialize() {
 }
 
 void AutonSelector::update() {
-    // TODO: replace this with a brain-screen selector when routine testing gets serious.
+    // Controller selector is quick in the pits; brain selector can come later.
     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
         setSelected(AutonRoutine::RedSafeAWP);
     }

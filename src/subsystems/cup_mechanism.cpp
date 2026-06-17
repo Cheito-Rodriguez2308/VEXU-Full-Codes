@@ -20,7 +20,9 @@ const char* toString(CupMechanismState state) {
 }
 
 CupMechanism::CupMechanism(std::int8_t motorPort, char pistonPort, util::Logger& logger)
-    : motor(motorPort), piston(pistonPort), logger(logger) {}
+    : motor(motorPort == 0 ? nullptr : std::make_unique<pros::Motor>(motorPort)),
+      piston(pistonPort),
+      logger(logger) {}
 
 void CupMechanism::initialize() {
     piston.set_value(false);
@@ -30,30 +32,30 @@ void CupMechanism::initialize() {
 void CupMechanism::update() {
     switch (state) {
     case CupMechanismState::Idle:
-        motor.move_voltage(0);
+        if (motor) motor->move_voltage(0);
         break;
     case CupMechanismState::Grab:
         piston.set_value(true);
-        motor.move_voltage(config::mechanism::grabVoltage);
+        if (motor) motor->move_voltage(config::mechanism::grabVoltage);
         break;
     case CupMechanismState::Hold:
         piston.set_value(true);
-        motor.move_voltage(config::mechanism::holdVoltage);
+        if (motor) motor->move_voltage(config::mechanism::holdVoltage);
         break;
     case CupMechanismState::Stack:
         piston.set_value(true);
-        motor.move_voltage(config::mechanism::scoreVoltage);
+        if (motor) motor->move_voltage(config::mechanism::scoreVoltage);
         break;
     case CupMechanismState::Release:
         piston.set_value(false);
-        motor.move_voltage(config::mechanism::releaseVoltage);
+        if (motor) motor->move_voltage(config::mechanism::releaseVoltage);
         break;
     }
 }
 
 void CupMechanism::stop() {
     state = CupMechanismState::Idle;
-    motor.brake();
+    if (motor) motor->brake();
 }
 
 void CupMechanism::setState(CupMechanismState nextState) {

@@ -20,7 +20,8 @@ const char* toString(ToggleMechanismState state) {
 }
 
 ToggleMechanism::ToggleMechanism(std::int8_t motorPort, util::Logger& logger)
-    : motor(motorPort), logger(logger) {}
+    : motor(motorPort == 0 ? nullptr : std::make_unique<pros::Motor>(motorPort)),
+      logger(logger) {}
 
 void ToggleMechanism::initialize() {
     stop();
@@ -29,26 +30,26 @@ void ToggleMechanism::initialize() {
 void ToggleMechanism::update() {
     switch (state) {
     case ToggleMechanismState::Idle:
-        motor.move_voltage(0);
+        if (motor) motor->move_voltage(0);
         break;
     case ToggleMechanismState::SetRed:
-        motor.move_voltage(config::mechanism::toggleVoltage);
+        if (motor) motor->move_voltage(config::mechanism::toggleVoltage);
         break;
     case ToggleMechanismState::SetBlue:
-        motor.move_voltage(config::mechanism::toggleVoltage);
+        if (motor) motor->move_voltage(config::mechanism::toggleVoltage);
         break;
     case ToggleMechanismState::SetYellow:
-        motor.move_voltage(config::mechanism::toggleVoltage);
+        if (motor) motor->move_voltage(config::mechanism::toggleVoltage);
         break;
     case ToggleMechanismState::Retract:
-        motor.move_voltage(-config::mechanism::toggleVoltage);
+        if (motor) motor->move_voltage(-config::mechanism::toggleVoltage);
         break;
     }
 }
 
 void ToggleMechanism::stop() {
     state = ToggleMechanismState::Idle;
-    motor.brake();
+    if (motor) motor->brake();
 }
 
 void ToggleMechanism::setState(ToggleMechanismState nextState) {

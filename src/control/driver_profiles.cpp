@@ -15,12 +15,12 @@ const char* toString(DriveMode mode) {
 DriverProfile defaultDriverProfile() {
     return {
         config::DriverName::Default,
-        DriveMode::DoubleStickArcade, // TODO: ask drivers before locking this in.
-        5,                            // TODO: retest for stick drift on the match controller.
-        12.0,                         // TODO: minimum output that reliably moves the drivetrain.
-        1.132,                        // TODO: soften if drivers over-correct near center.
-        12.0,                         // TODO: minimum turn output.
-        1.132,                        // TODO: tune with full robot weight.
+        DriveMode::DoubleStickArcade, // Matches the AON-style split arcade base.
+        5,                            // Retest for stick drift on the match controller.
+        12.0,                         // Minimum output that reliably moves the drivetrain.
+        1.132,                        // Soften if drivers over-correct near center.
+        12.0,                         // Minimum turn output.
+        1.132,                        // Tune with full robot weight.
         0.5,                          // Keeps arcade drive from clipping one side too early.
         127,                          // Full driver speed until practice says otherwise.
         0.45                          // Precision mode for lining up game-object pickups.

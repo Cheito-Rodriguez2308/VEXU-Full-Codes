@@ -10,12 +10,12 @@ SensorTuning::SensorTuning(subsystems::Drivetrain& drivetrain, subsystems::Senso
 
 void SensorTuning::trackingWheelDirectionTest() {
     logger.info("Push forward: vertical wheel should increase. Push right: horizontal wheel should increase.");
-    logger.info("TODO: check offsets after direction is correct");
+    logger.info("Check offsets after direction is correct");
 }
 
 void SensorTuning::mechanismSensorTest() {
     sensors.debug();
-    logger.info("TODO: verify thresholds before trusting possession guards");
+    logger.info("Verify thresholds before trusting possession guards");
 }
 
 } // namespace tuning

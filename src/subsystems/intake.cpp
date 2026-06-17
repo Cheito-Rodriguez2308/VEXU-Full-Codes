@@ -27,11 +27,21 @@ Intake::Intake(const config::RobotConfig& config, util::Logger& logger)
       elevatorMotors(config.ports.intake.elevator),
       judgeMotors(config.ports.intake.judge),
       scorerMotors(config.ports.intake.scorer),
-      scorerPiston(config.ports.intake.scorerPiston),
-      cartPiston(config.ports.intake.cartPiston),
-      trapdoorPiston(config.ports.intake.trapdoorPiston),
-      acceptSensor(config.ports.intake.acceptSensor),
-      rejectSensor(config.ports.intake.rejectSensor),
+      scorerPiston(config.ports.intake.scorerPiston == 0
+                       ? nullptr
+                       : std::make_unique<pros::adi::DigitalOut>(config.ports.intake.scorerPiston)),
+      cartPiston(config.ports.intake.cartPiston == 0
+                     ? nullptr
+                     : std::make_unique<pros::adi::DigitalOut>(config.ports.intake.cartPiston)),
+      trapdoorPiston(config.ports.intake.trapdoorPiston == 0
+                         ? nullptr
+                         : std::make_unique<pros::adi::DigitalOut>(config.ports.intake.trapdoorPiston)),
+      acceptSensor(config.ports.intake.acceptSensor == 0
+                       ? nullptr
+                       : std::make_unique<pros::adi::DigitalIn>(config.ports.intake.acceptSensor)),
+      rejectSensor(config.ports.intake.rejectSensor == 0
+                       ? nullptr
+                       : std::make_unique<pros::adi::DigitalIn>(config.ports.intake.rejectSensor)),
       distanceSensor(config.ports.intake.distanceSensor),
       opticalSensor(config.ports.intake.opticalSensor),
       logger(logger) {}
@@ -194,13 +204,16 @@ void Intake::sortTaskStep() {
             judgeMotors.move_velocity(scoreHeight == IntakeScoreHeight::Top ? intakeVelocity : -intakeVelocity);
         }
         break;
-    case IntakeSortState::Routing:
-        if (acceptSensor.get_value() || rejectSensor.get_value()) {
+    case IntakeSortState::Routing: {
+        const bool accepted = acceptSensor && acceptSensor->get_value();
+        const bool rejected = rejectSensor && rejectSensor->get_value();
+        if (accepted || rejected) {
             sortState = IntakeSortState::Settling;
             sortUntilMs = now + 120;
             judgeMotors.move_velocity(0);
         }
         break;
+    }
     case IntakeSortState::Settling:
         if (now >= sortUntilMs) {
             sortState = IntakeSortState::Idle;
@@ -300,8 +313,8 @@ void Intake::moveBigScore(IntakeScoreHeight height) {
     }
 }
 
-void Intake::setPiston(pros::adi::DigitalOut& piston, bool value) {
-    piston.set_value(value);
+void Intake::setPiston(std::unique_ptr<pros::adi::DigitalOut>& piston, bool value) {
+    if (piston) piston->set_value(value);
 }
 
 bool Intake::objectDetected() {

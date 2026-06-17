@@ -43,5 +43,5 @@ should request subsystem states instead of directly controlling motors.
 
 ## Placeholder Values
 
-Every unmeasured robot-specific value must include `TODO`. Replace
+Every unmeasured robot-specific value must be clearly marked. Replace
 one group at a time and record the test result in `docs/`.
