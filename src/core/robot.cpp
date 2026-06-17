@@ -12,7 +12,7 @@ Robot::Robot()
       controller(pros::E_CONTROLLER_MASTER),
       config(config::activeRobotConfig()),
       drivetrain(config, logger),
-      intake(config.ports.intake, logger),
+      intake(config, logger),
       pin(config.ports.motors.pin, config.ports.adi.semPiston ? config.ports.adi.semPiston : config.ports.adi.arrowPiston, logger),
       cup(config.ports.motors.cup, config.ports.adi.brooksPiston, logger),
       toggle(config.ports.motors.toggle, logger),
