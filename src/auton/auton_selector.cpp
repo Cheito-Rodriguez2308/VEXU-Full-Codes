@@ -19,14 +19,25 @@ const char* toString(AutonRoutine routine) {
         return "Blue Midfield";
     case AutonRoutine::SkillsRoute:
         return "Skills";
+    case AutonRoutine::AonRed1:
+        return "AON Red 1";
+    case AutonRoutine::AonRed2:
+        return "AON Red 2";
+    case AutonRoutine::AonBlue1:
+        return "AON Blue 1";
+    case AutonRoutine::AonBlue2:
+        return "AON Blue 2";
+    case AutonRoutine::AonSkills1:
+        return "AON Skills 1";
     case AutonRoutine::DoNothing:
         return "Do Nothing";
     }
     return "Unknown";
 }
 
-AutonSelector::AutonSelector(AutonActions& actions, pros::Controller& controller, util::Logger& logger)
-    : actions(actions), controller(controller), logger(logger) {}
+AutonSelector::AutonSelector(AutonActions& actions, const config::RobotConfig& config,
+                             pros::Controller& controller, util::Logger& logger)
+    : actions(actions), config(config), controller(controller), logger(logger) {}
 
 void AutonSelector::initialize() {
     selectedRoutine = AutonRoutine::DoNothing;
@@ -43,6 +54,26 @@ void AutonSelector::update() {
     }
     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
         setSelected(AutonRoutine::SkillsRoute);
+    }
+    if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1) &&
+        controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+        setSelected(AutonRoutine::AonRed1);
+    }
+    if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1) &&
+        controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+        setSelected(AutonRoutine::AonBlue1);
+    }
+    if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1) &&
+        controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+        setSelected(AutonRoutine::AonSkills1);
+    }
+    if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1) &&
+        controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+        setSelected(AutonRoutine::AonRed2);
+    }
+    if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1) &&
+        controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+        setSelected(AutonRoutine::AonBlue2);
     }
     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
         setSelected(AutonRoutine::DoNothing);
@@ -73,6 +104,21 @@ void AutonSelector::runSelected() {
         break;
     case AutonRoutine::SkillsRoute:
         skillsRoute(actions);
+        break;
+    case AutonRoutine::AonRed1:
+        aonRedRoutine1(actions, config.identity);
+        break;
+    case AutonRoutine::AonRed2:
+        aonRedRoutine2(actions, config.identity);
+        break;
+    case AutonRoutine::AonBlue1:
+        aonBlueRoutine1(actions, config.identity);
+        break;
+    case AutonRoutine::AonBlue2:
+        aonBlueRoutine2(actions, config.identity);
+        break;
+    case AutonRoutine::AonSkills1:
+        aonSkillsRoutine1(actions, config.identity);
         break;
     case AutonRoutine::DoNothing:
         doNothing(actions);

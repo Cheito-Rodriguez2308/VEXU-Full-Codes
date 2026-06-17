@@ -1,5 +1,7 @@
 #pragma once
 
+#include "config/robot_identity.hpp"
+
 namespace control {
 
 enum class DriveMode {
@@ -12,6 +14,7 @@ enum class DriveMode {
 const char* toString(DriveMode mode);
 
 struct DriverProfile {
+    config::DriverName driver;
     DriveMode mode;
     int deadband;
     double throttleMinOutput;
@@ -24,5 +27,8 @@ struct DriverProfile {
 };
 
 DriverProfile defaultDriverProfile();
+DriverProfile kevinDriverProfile();
+DriverProfile fabianDriverProfile();
+DriverProfile profileForDriver(config::DriverName driver);
 
 } // namespace control

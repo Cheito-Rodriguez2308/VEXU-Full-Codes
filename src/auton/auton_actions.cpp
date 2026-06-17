@@ -65,6 +65,51 @@ void AutonActions::setToggle(subsystems::ToggleMechanismState state) {
     pros::delay(250); // TODO: temporary timing until the toggle is on the robot.
 }
 
+void AutonActions::startIntakeScan() {
+    logger.autonStep("startIntakeScan");
+    intake.startScan();
+}
+
+void AutonActions::stopIntakeScan() {
+    logger.autonStep("stopIntakeScan");
+    intake.stopScan();
+}
+
+void AutonActions::toggleCart() {
+    logger.autonStep("toggleCart");
+    intake.toggleCart();
+}
+
+void AutonActions::setScoreHeight(subsystems::IntakeScoreHeight height) {
+    logger.autonStep("setScoreHeight");
+    intake.setScoreHeight(height);
+}
+
+void AutonActions::startSortRelease() {
+    logger.autonStep("startSortRelease");
+    intake.startReleasing();
+}
+
+void AutonActions::stopSortRelease() {
+    logger.autonStep("stopSortRelease");
+    intake.stopReleasing();
+}
+
+void AutonActions::scoreIntake(subsystems::IntakeScoreHeight height, int durationMs) {
+    logger.autonStep("scoreIntake");
+    intake.setScoreHeight(height);
+    intake.setState(subsystems::IntakeState::Outtake);
+    pros::delay(durationMs);
+    intake.setState(subsystems::IntakeState::Off);
+}
+
+void AutonActions::hDriveFor(const char* name, int throttle, int turn, int strafe, int durationMs) {
+    logger.autonStep(name);
+    drivetrain.hDrive(throttle, turn, strafe);
+    pros::delay(durationMs);
+    drivetrain.stop();
+}
+
 void AutonActions::waitForSensor(const char* name, int timeoutMs) {
     logger.autonStep(name);
     util::Timer timer;

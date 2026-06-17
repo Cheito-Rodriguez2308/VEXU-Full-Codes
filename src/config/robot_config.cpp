@@ -15,6 +15,7 @@ static lemlib::ControllerSettings aonAngularSettings() {
 const RobotConfig& smallRobotConfig() {
     static const RobotConfig config{
         RobotIdentity::SmallRobot,
+        DriverName::Kevin,
         smallRobotPorts(),
         {
             2.75,
@@ -63,6 +64,7 @@ const RobotConfig& smallRobotConfig() {
 const RobotConfig& bigRobotConfig() {
     static const RobotConfig config{
         RobotIdentity::BigRobot,
+        DriverName::Fabian,
         bigRobotPorts(),
         {
             3.25,

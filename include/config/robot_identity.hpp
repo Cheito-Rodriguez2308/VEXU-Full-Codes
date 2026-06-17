@@ -11,6 +11,12 @@ enum class RobotIdentity {
     BigRobot
 };
 
+enum class DriverName {
+    Default,
+    Kevin,
+    Fabian
+};
+
 const char* toString(RobotIdentity identity);
 RobotIdentity selectedRobot();
 

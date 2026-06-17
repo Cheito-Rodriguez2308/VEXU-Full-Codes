@@ -6,6 +6,7 @@
 #include "subsystems/pin_mechanism.hpp"
 #include "subsystems/sensors.hpp"
 #include "subsystems/toggle_mechanism.hpp"
+#include "pros/rtos.hpp"
 
 namespace control {
 
@@ -65,10 +66,24 @@ void DriverControl::updateDrive() {
 }
 
 void DriverControl::updateSubsystemRequests() {
-    // Buttons request states; subsystems decide motor outputs. This keeps driver control readable.
     const bool manualOverride = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
     sensors.setManualOverride(manualOverride);
 
+    switch (profile.driver) {
+    case config::DriverName::Kevin:
+        updateKevinRequests();
+        break;
+    case config::DriverName::Fabian:
+        updateFabianRequests();
+        break;
+    case config::DriverName::Default:
+        updateDefaultRequests();
+        break;
+    }
+}
+
+void DriverControl::updateDefaultRequests() {
+    // Buttons request states; subsystems decide motor outputs. This keeps driver control readable.
     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
         intake.setState(subsystems::IntakeState::IntakePin);
     }
@@ -99,6 +114,102 @@ void DriverControl::updateSubsystemRequests() {
     }
     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
         toggle.setState(subsystems::ToggleMechanismState::Retract);
+    }
+}
+
+void DriverControl::updateKevinRequests() {
+    const std::uint32_t now = pros::millis();
+
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
+        if (now - lastR2PressMs < 250) {
+            kevinMergeCorridorAndElevator = !kevinMergeCorridorAndElevator;
+        }
+        lastR2PressMs = now;
+    }
+
+    if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+        intake.setState(kevinMergeCorridorAndElevator ? subsystems::IntakeState::IntakeCup
+                                                      : subsystems::IntakeState::IntakePin);
+    } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+        intake.setState(subsystems::IntakeState::Outtake);
+    } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+        intake.setScoreHeight(subsystems::IntakeScoreHeight::Bottom);
+        intake.setState(subsystems::IntakeState::Outtake);
+    } else if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+        intake.setState(subsystems::IntakeState::Off);
+    }
+
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+        if (now - lastR1PressMs < 250) {
+            intake.resetLever();
+        } else {
+            intake.extendLever();
+        }
+        lastR1PressMs = now;
+    }
+
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+        intake.toggleScorerHeight();
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
+        intake.toggleCart();
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
+        intake.toggleTrapdoor();
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+        cup.setState(subsystems::CupMechanismState::Stack);
+    }
+
+    pin.setState(controller.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)
+                     ? subsystems::PinMechanismState::Release
+                     : subsystems::PinMechanismState::Grab);
+}
+
+void DriverControl::updateFabianRequests() {
+    if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+        intake.setState(subsystems::IntakeState::IntakeCup);
+    } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+        intake.setScoreHeight(subsystems::IntakeScoreHeight::Bottom);
+        intake.setState(subsystems::IntakeState::Outtake);
+    } else if (!controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1) &&
+               !controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+        intake.setState(subsystems::IntakeState::Off);
+    }
+
+    if (fabianSortEnabled) {
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+            intake.setScoreHeight(subsystems::IntakeScoreHeight::Top);
+            intake.startReleasing();
+        } else if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
+            intake.setScoreHeight(subsystems::IntakeScoreHeight::Middle);
+            intake.startReleasing();
+        } else if (!controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1) &&
+                   !controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+            intake.stopReleasing();
+        }
+    } else {
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+            intake.setScoreHeight(subsystems::IntakeScoreHeight::Top);
+            intake.setState(subsystems::IntakeState::Outtake);
+        } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+            intake.setScoreHeight(subsystems::IntakeScoreHeight::Middle);
+            intake.setState(subsystems::IntakeState::Outtake);
+        }
+    }
+
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+        cup.setState(subsystems::CupMechanismState::Stack);
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+        pin.setState(subsystems::PinMechanismState::Grab);
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+        intake.toggleCart();
+    }
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
+        fabianSortEnabled = !fabianSortEnabled;
+        if (!fabianSortEnabled) intake.stopReleasing();
     }
 }
 

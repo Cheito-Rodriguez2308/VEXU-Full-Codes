@@ -56,6 +56,14 @@ class AutonActions {
     void scorePin();
     void scoreCup();
     void setToggle(subsystems::ToggleMechanismState state);
+    void startIntakeScan();
+    void stopIntakeScan();
+    void toggleCart();
+    void setScoreHeight(subsystems::IntakeScoreHeight height);
+    void startSortRelease();
+    void stopSortRelease();
+    void scoreIntake(subsystems::IntakeScoreHeight height, int durationMs);
+    void hDriveFor(const char* name, int throttle, int turn, int strafe, int durationMs);
     void waitForSensor(const char* name, int timeoutMs);
     void cancelMotionIf(bool condition, const char* reason);
 

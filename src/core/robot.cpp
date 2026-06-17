@@ -19,7 +19,7 @@ Robot::Robot()
       sensors(config.ports.intake.opticalSensor, config.ports.intake.distanceSensor, logger),
       driverControl(controller, drivetrain, intake, pin, cup, toggle, sensors),
       autonActions(drivetrain, intake, pin, cup, toggle, sensors, logger),
-      autonSelector(autonActions, controller, logger),
+      autonSelector(autonActions, config, controller, logger),
       driveTuning(drivetrain, logger),
       pidTuning(logger),
       sensorTuning(drivetrain, sensors, logger),
@@ -36,6 +36,7 @@ void Robot::initialize() {
     cup.initialize();
     toggle.initialize();
     sensors.initialize();
+    driverControl.setProfile(control::profileForDriver(config.driver));
     driverControl.initialize();
     autonSelector.initialize();
     tuningMenu.initialize();

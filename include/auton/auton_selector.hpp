@@ -1,6 +1,7 @@
 #pragma once
 
 #include "auton/auton_actions.hpp"
+#include "config/robot_config.hpp"
 #include "pros/misc.hpp"
 #include "util/logger.hpp"
 
@@ -14,6 +15,11 @@ enum class AutonRoutine {
     RedMidfieldPressure,
     BlueMidfieldPressure,
     SkillsRoute,
+    AonRed1,
+    AonRed2,
+    AonBlue1,
+    AonBlue2,
+    AonSkills1,
     DoNothing
 };
 
@@ -21,7 +27,8 @@ const char* toString(AutonRoutine routine);
 
 class AutonSelector {
   public:
-    AutonSelector(AutonActions& actions, pros::Controller& controller, util::Logger& logger);
+    AutonSelector(AutonActions& actions, const config::RobotConfig& config,
+                  pros::Controller& controller, util::Logger& logger);
 
     void initialize();
     void update();
@@ -31,6 +38,7 @@ class AutonSelector {
 
   private:
     AutonActions& actions;
+    const config::RobotConfig& config;
     pros::Controller& controller;
     util::Logger& logger;
     AutonRoutine selectedRoutine = AutonRoutine::DoNothing;

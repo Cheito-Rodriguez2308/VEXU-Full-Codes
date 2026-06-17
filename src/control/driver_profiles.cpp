@@ -14,6 +14,7 @@ const char* toString(DriveMode mode) {
 
 DriverProfile defaultDriverProfile() {
     return {
+        config::DriverName::Default,
         DriveMode::DoubleStickArcade, // TODO: ask drivers before locking this in.
         5,                            // TODO: retest for stick drift on the match controller.
         12.0,                         // TODO: minimum output that reliably moves the drivetrain.
@@ -24,6 +25,34 @@ DriverProfile defaultDriverProfile() {
         127,                          // Full driver speed until practice says otherwise.
         0.45                          // Precision mode for lining up game-object pickups.
     };
+}
+
+DriverProfile kevinDriverProfile() {
+    DriverProfile profile = defaultDriverProfile();
+    profile.driver = config::DriverName::Kevin;
+    profile.mode = DriveMode::DoubleStickArcade;
+    profile.precisionSpeedScale = 0.45;
+    return profile;
+}
+
+DriverProfile fabianDriverProfile() {
+    DriverProfile profile = defaultDriverProfile();
+    profile.driver = config::DriverName::Fabian;
+    profile.mode = DriveMode::DoubleStickArcade;
+    profile.precisionSpeedScale = 0.50;
+    return profile;
+}
+
+DriverProfile profileForDriver(config::DriverName driver) {
+    switch (driver) {
+    case config::DriverName::Kevin:
+        return kevinDriverProfile();
+    case config::DriverName::Fabian:
+        return fabianDriverProfile();
+    case config::DriverName::Default:
+        return defaultDriverProfile();
+    }
+    return defaultDriverProfile();
 }
 
 } // namespace control

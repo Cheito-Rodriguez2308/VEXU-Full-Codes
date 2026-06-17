@@ -31,6 +31,9 @@ class DriverControl {
   private:
     void updateDrive();
     void updateSubsystemRequests();
+    void updateDefaultRequests();
+    void updateKevinRequests();
+    void updateFabianRequests();
 
     pros::Controller& controller;
     subsystems::Drivetrain& drivetrain;
@@ -40,6 +43,10 @@ class DriverControl {
     subsystems::ToggleMechanism& toggle;
     subsystems::Sensors& sensors;
     DriverProfile profile;
+    std::uint32_t lastR1PressMs = 0;
+    std::uint32_t lastR2PressMs = 0;
+    bool kevinMergeCorridorAndElevator = true;
+    bool fabianSortEnabled = true;
 };
 
 } // namespace control

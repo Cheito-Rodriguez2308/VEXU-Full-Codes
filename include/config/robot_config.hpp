@@ -72,6 +72,7 @@ struct PidConfig {
 
 struct RobotConfig {
     RobotIdentity identity;
+    DriverName driver;
     Ports ports;
     AonRobotConstants aon;
     DriveConfig drive;
