@@ -52,6 +52,7 @@ class AutonActions {
                       lemlib::DriveSide side,
                       int timeout,
                       lemlib::SwingToPointParams params = {});
+    void setPose(const char* name, double x, double y, double theta);
     void followPath(const char* name, const asset& path, double lookahead, int timeout, bool forwards);
     void scorePin();
     void scoreCup();

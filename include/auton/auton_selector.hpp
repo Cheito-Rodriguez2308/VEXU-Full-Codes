@@ -15,6 +15,7 @@ enum class AutonRoutine {
     RedMidfieldPressure,
     BlueMidfieldPressure,
     SkillsRoute,
+    PathJerryIoTest,
     AonRed1,
     AonRed2,
     AonBlue1,

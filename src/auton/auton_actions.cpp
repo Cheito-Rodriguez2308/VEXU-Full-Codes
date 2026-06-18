@@ -41,6 +41,11 @@ void AutonActions::swingToPoint(const char* name, double x, double y, lemlib::Dr
     drivetrain.swingToPoint(name, x, y, side, timeout, params);
 }
 
+void AutonActions::setPose(const char* name, double x, double y, double theta) {
+    logger.autonStep(name);
+    drivetrain.chassis().setPose(x, y, theta);
+}
+
 void AutonActions::followPath(const char* name, const asset& path, double lookahead, int timeout, bool forwards) {
     drivetrain.followPath(name, path, lookahead, timeout, forwards);
 }

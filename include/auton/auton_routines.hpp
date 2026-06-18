@@ -19,6 +19,7 @@ void blueGoalStackPriority(AutonActions& actions);
 void redMidfieldPressure(AutonActions& actions);
 void blueMidfieldPressure(AutonActions& actions);
 void skillsRoute(AutonActions& actions);
+void pathJerryIoTest(AutonActions& actions);
 void aonRedRoutine1(AutonActions& actions, config::RobotIdentity identity);
 void aonRedRoutine2(AutonActions& actions, config::RobotIdentity identity);
 void aonBlueRoutine1(AutonActions& actions, config::RobotIdentity identity);

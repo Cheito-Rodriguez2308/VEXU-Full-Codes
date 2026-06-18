@@ -19,6 +19,8 @@ const char* toString(AutonRoutine routine) {
         return "Blue Midfield";
     case AutonRoutine::SkillsRoute:
         return "Skills";
+    case AutonRoutine::PathJerryIoTest:
+        return "Path JerryIO Test";
     case AutonRoutine::AonRed1:
         return "AON Red 1";
     case AutonRoutine::AonRed2:
@@ -68,6 +70,10 @@ void AutonSelector::update() {
         setSelected(AutonRoutine::AonSkills1);
     }
     if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1) &&
+        controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+        setSelected(AutonRoutine::PathJerryIoTest);
+    }
+    if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1) &&
         controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
         setSelected(AutonRoutine::AonRed2);
     }
@@ -104,6 +110,9 @@ void AutonSelector::runSelected() {
         break;
     case AutonRoutine::SkillsRoute:
         skillsRoute(actions);
+        break;
+    case AutonRoutine::PathJerryIoTest:
+        pathJerryIoTest(actions);
         break;
     case AutonRoutine::AonRed1:
         aonRedRoutine1(actions, config.identity);

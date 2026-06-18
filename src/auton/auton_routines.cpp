@@ -56,6 +56,13 @@ void skillsRoute(AutonActions& actions) {
     actions.followPath("skills part 2", paths_skills_part_2_txt, config::tuning::defaultLookahead, 5000, true);
 }
 
+void pathJerryIoTest(AutonActions& actions) {
+    // Quick path.jerryio check. First line of static/paths/path.jerryio.txt is 0, 0, 20.
+    // Keep this as a test routine until the path is retuned on the current robot.
+    actions.setPose("path start pose", 0.0, 0.0, 20.0);
+    actions.followPath("path.jerryio test", paths_path_jerryio_txt, config::tuning::defaultLookahead, 8000, true);
+}
+
 static void aonSmallMatchLoader(AutonActions& actions) {
     // AON small bot routine style: line up with the loader, use scan, then score.
     actions.driveToPoint("small loader align", 31.0, 0.0, 2500);
