@@ -36,7 +36,8 @@ const DriverProfile& DriverControl::getProfile() const {
 
 void DriverControl::updateDrive() {
     InputCurve curve(profile);
-    const bool precision = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
+    // L1 is used by Kevin/Fabian for intake work, so precision lives on RIGHT.
+    const bool precision = controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT);
 
     const int leftY = curve.limit(curve.throttle(controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)), precision);
     const int rightY = curve.limit(curve.throttle(controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y)), precision);

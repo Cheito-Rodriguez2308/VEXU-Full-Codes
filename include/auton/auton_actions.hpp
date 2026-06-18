@@ -61,6 +61,7 @@ class AutonActions {
     void stopIntakeScan();
     void toggleCart();
     void setScoreHeight(subsystems::IntakeScoreHeight height);
+    void setIntakeAlliance(subsystems::IntakeAlliance alliance);
     void startSortRelease();
     void stopSortRelease();
     void scoreIntake(subsystems::IntakeScoreHeight height, int durationMs);

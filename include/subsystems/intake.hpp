@@ -35,7 +35,19 @@ enum class IntakeSortState {
     Settling
 };
 
+enum class IntakeAlliance {
+    Red,
+    Blue
+};
+
+enum class IntakeSortDecision {
+    None,
+    Accept,
+    Reject
+};
+
 const char* toString(IntakeState state);
+const char* toString(IntakeAlliance alliance);
 
 class Intake {
   public:
@@ -47,6 +59,8 @@ class Intake {
     void stop();
     void setState(IntakeState nextState);
     IntakeState getState() const;
+    void setAlliance(IntakeAlliance nextAlliance);
+    IntakeAlliance getAlliance() const;
     void setScoreHeight(IntakeScoreHeight height);
     void toggleCart();
     void toggleScorerHeight();
@@ -64,6 +78,7 @@ class Intake {
   private:
     void updateSmallRobot();
     void updateBigRobot();
+    void applyBigSortOutputs();
     void moveAll(int rpm);
     void moveStorePath(int rpm);
     void moveSmallStore(int rpm);
@@ -71,13 +86,23 @@ class Intake {
     void moveBigStore(int rpm);
     void moveBigScore(IntakeScoreHeight height);
     void setPiston(std::unique_ptr<pros::adi::DigitalOut>& piston, bool value);
+    void moveIfPresent(pros::MotorGroup& motors, bool present, int rpm);
+    void brakeIfPresent(pros::MotorGroup& motors, bool present);
+    void configureIfPresent(pros::MotorGroup& motors,
+                            bool present,
+                            pros::motor_brake_mode_e_t brakeMode);
     bool objectDetected();
     bool seesRed();
     bool seesBlue();
+    IntakeSortDecision sortDecisionFromOptical();
 
     config::RobotIdentity robotIdentity;
     int intakeVelocity;
     int activationDistance;
+    bool hasCorridorMotors;
+    bool hasElevatorMotors;
+    bool hasJudgeMotors;
+    bool hasScorerMotors;
     pros::MotorGroup corridorMotors;
     pros::MotorGroup elevatorMotors;
     pros::MotorGroup judgeMotors;
@@ -91,9 +116,12 @@ class Intake {
     pros::Optical opticalSensor;
     util::Logger& logger;
     IntakeState state = IntakeState::Off;
+    IntakeAlliance alliance = IntakeAlliance::Red;
     IntakeScoreHeight scoreHeight = IntakeScoreHeight::Top;
     IntakeSortState sortState = IntakeSortState::Idle;
+    IntakeSortDecision sortDecision = IntakeSortDecision::None;
     bool scanning = false;
+    bool scanStoreRequested = false;
     bool releasing = false;
     bool cartDown = false;
     bool scorerRaised = false;

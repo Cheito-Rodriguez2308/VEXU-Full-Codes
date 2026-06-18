@@ -19,10 +19,24 @@ const char* toString(IntakeState state) {
     return "Unknown";
 }
 
+const char* toString(IntakeAlliance alliance) {
+    switch (alliance) {
+    case IntakeAlliance::Red:
+        return "Red";
+    case IntakeAlliance::Blue:
+        return "Blue";
+    }
+    return "Unknown";
+}
+
 Intake::Intake(const config::RobotConfig& config, util::Logger& logger)
     : robotIdentity(config.identity),
       intakeVelocity(static_cast<int>(config.aon.intakeVelocity)),
       activationDistance(static_cast<int>(config.aon.intakeActivationDistance)),
+      hasCorridorMotors(config.ports.intake.corridor.size() > 0),
+      hasElevatorMotors(config.ports.intake.elevator.size() > 0),
+      hasJudgeMotors(config.ports.intake.judge.size() > 0),
+      hasScorerMotors(config.ports.intake.scorer.size() > 0),
       corridorMotors(config.ports.intake.corridor),
       elevatorMotors(config.ports.intake.elevator),
       judgeMotors(config.ports.intake.judge),
@@ -60,25 +74,10 @@ void Intake::configureForMatch(bool) {
     const bool bigRobot = robotIdentity == config::RobotIdentity::BigRobot;
     const pros::motor_brake_mode_e_t brakeMode = bigRobot ? pros::E_MOTOR_BRAKE_BRAKE : pros::E_MOTOR_BRAKE_COAST;
 
-    corridorMotors.set_brake_mode_all(brakeMode);
-    elevatorMotors.set_brake_mode_all(brakeMode);
-    judgeMotors.set_brake_mode_all(brakeMode);
-    scorerMotors.set_brake_mode_all(brakeMode);
-
-    corridorMotors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
-    elevatorMotors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
-    judgeMotors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
-    scorerMotors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
-
-    corridorMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
-    elevatorMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
-    judgeMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
-    scorerMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
-
-    corridorMotors.tare_position_all();
-    elevatorMotors.tare_position_all();
-    judgeMotors.tare_position_all();
-    scorerMotors.tare_position_all();
+    configureIfPresent(corridorMotors, hasCorridorMotors, brakeMode);
+    configureIfPresent(elevatorMotors, hasElevatorMotors, brakeMode);
+    configureIfPresent(judgeMotors, hasJudgeMotors, brakeMode);
+    configureIfPresent(scorerMotors, hasScorerMotors, brakeMode);
 
     if (!bigRobot) {
         stopScan();
@@ -107,11 +106,13 @@ void Intake::update(bool hasPin, bool hasCup, bool manualOverride) {
 void Intake::stop() {
     state = IntakeState::Off;
     releasing = false;
+    scanStoreRequested = false;
+    sortDecision = IntakeSortDecision::None;
     moveAll(0);
-    corridorMotors.brake();
-    elevatorMotors.brake();
-    judgeMotors.brake();
-    scorerMotors.brake();
+    brakeIfPresent(corridorMotors, hasCorridorMotors);
+    brakeIfPresent(elevatorMotors, hasElevatorMotors);
+    brakeIfPresent(judgeMotors, hasJudgeMotors);
+    brakeIfPresent(scorerMotors, hasScorerMotors);
 }
 
 void Intake::setState(IntakeState nextState) {
@@ -123,6 +124,17 @@ void Intake::setState(IntakeState nextState) {
 
 IntakeState Intake::getState() const {
     return state;
+}
+
+void Intake::setAlliance(IntakeAlliance nextAlliance) {
+    if (alliance != nextAlliance) {
+        logger.info(std::string("Intake alliance: ") + toString(nextAlliance));
+    }
+    alliance = nextAlliance;
+}
+
+IntakeAlliance Intake::getAlliance() const {
+    return alliance;
 }
 
 void Intake::setScoreHeight(IntakeScoreHeight height) {
@@ -146,12 +158,12 @@ void Intake::toggleTrapdoor() {
 
 void Intake::extendLever() {
     leverExtended = true;
-    scorerMotors.move_relative(150, intakeVelocity);
+    if (hasScorerMotors) scorerMotors.move_relative(150, intakeVelocity);
 }
 
 void Intake::resetLever() {
     leverExtended = false;
-    scorerMotors.move_absolute(0, intakeVelocity);
+    if (hasScorerMotors) scorerMotors.move_absolute(0, intakeVelocity);
 }
 
 void Intake::startScan() {
@@ -160,28 +172,24 @@ void Intake::startScan() {
 
 void Intake::stopScan() {
     scanning = false;
+    scanStoreRequested = false;
 }
 
 void Intake::startReleasing() {
     releasing = true;
     sortState = IntakeSortState::Idle;
+    sortDecision = IntakeSortDecision::None;
 }
 
 void Intake::stopReleasing() {
     releasing = false;
     sortState = IntakeSortState::Idle;
-    judgeMotors.move_velocity(0);
+    sortDecision = IntakeSortDecision::None;
+    moveIfPresent(judgeMotors, hasJudgeMotors, 0);
 }
 
 void Intake::scanTaskStep() {
-    if (!scanning || !objectDetected()) return;
-
-    // AON used scan as a helper to keep objects moving once detected.
-    if (robotIdentity == config::RobotIdentity::BigRobot) {
-        moveBigStore(intakeVelocity);
-    } else {
-        moveSmallStore(intakeVelocity);
-    }
+    scanStoreRequested = scanning && objectDetected();
 }
 
 void Intake::sortTaskStep() {
@@ -190,18 +198,15 @@ void Intake::sortTaskStep() {
     const std::uint32_t now = pros::millis();
     switch (sortState) {
     case IntakeSortState::Idle:
-        if (seesRed() || seesBlue()) {
+        sortDecision = sortDecisionFromOptical();
+        if (sortDecision != IntakeSortDecision::None) {
             sortState = IntakeSortState::Kickback;
             sortUntilMs = now + 250;
-            elevatorMotors.move_velocity(-intakeVelocity);
-            judgeMotors.move_velocity(0);
         }
         break;
     case IntakeSortState::Kickback:
         if (now >= sortUntilMs) {
             sortState = IntakeSortState::Routing;
-            elevatorMotors.move_velocity(intakeVelocity * 2 / 3);
-            judgeMotors.move_velocity(scoreHeight == IntakeScoreHeight::Top ? intakeVelocity : -intakeVelocity);
         }
         break;
     case IntakeSortState::Routing: {
@@ -210,13 +215,13 @@ void Intake::sortTaskStep() {
         if (accepted || rejected) {
             sortState = IntakeSortState::Settling;
             sortUntilMs = now + 120;
-            judgeMotors.move_velocity(0);
         }
         break;
     }
     case IntakeSortState::Settling:
         if (now >= sortUntilMs) {
             sortState = IntakeSortState::Idle;
+            sortDecision = IntakeSortDecision::None;
         }
         break;
     }
@@ -227,6 +232,11 @@ void Intake::debug() const {
 }
 
 void Intake::updateSmallRobot() {
+    if (scanning && scanStoreRequested) {
+        moveSmallStore(intakeVelocity);
+        return;
+    }
+
     switch (state) {
     case IntakeState::Off:
         moveAll(0);
@@ -239,15 +249,22 @@ void Intake::updateSmallRobot() {
         moveSmallReject(intakeVelocity);
         break;
     case IntakeState::Hold:
-        corridorMotors.move_velocity(0);
-        elevatorMotors.move_velocity(0);
-        judgeMotors.move_velocity(0);
-        scorerMotors.move_velocity(0);
+        moveAll(0);
         break;
     }
 }
 
 void Intake::updateBigRobot() {
+    if (releasing) {
+        applyBigSortOutputs();
+        return;
+    }
+
+    if (scanning && scanStoreRequested) {
+        moveBigStore(intakeVelocity);
+        return;
+    }
+
     switch (state) {
     case IntakeState::Off:
         moveAll(0);
@@ -260,17 +277,42 @@ void Intake::updateBigRobot() {
         moveBigScore(scoreHeight);
         break;
     case IntakeState::Hold:
-        elevatorMotors.move_velocity(0);
-        judgeMotors.move_velocity(0);
+        moveIfPresent(elevatorMotors, hasElevatorMotors, 0);
+        moveIfPresent(judgeMotors, hasJudgeMotors, 0);
+        break;
+    }
+}
+
+void Intake::applyBigSortOutputs() {
+    switch (sortState) {
+    case IntakeSortState::Idle:
+        moveBigStore(intakeVelocity);
+        break;
+    case IntakeSortState::Kickback:
+        moveIfPresent(elevatorMotors, hasElevatorMotors, -intakeVelocity);
+        moveIfPresent(judgeMotors, hasJudgeMotors, 0);
+        break;
+    case IntakeSortState::Routing: {
+        const bool accept = sortDecision == IntakeSortDecision::Accept;
+        const int judgeRpm = accept
+                                 ? (scoreHeight == IntakeScoreHeight::Top ? intakeVelocity : -intakeVelocity)
+                                 : -intakeVelocity;
+        moveIfPresent(elevatorMotors, hasElevatorMotors, intakeVelocity * 2 / 3);
+        moveIfPresent(judgeMotors, hasJudgeMotors, judgeRpm);
+        break;
+    }
+    case IntakeSortState::Settling:
+        moveIfPresent(elevatorMotors, hasElevatorMotors, intakeVelocity / 2);
+        moveIfPresent(judgeMotors, hasJudgeMotors, 0);
         break;
     }
 }
 
 void Intake::moveAll(int rpm) {
-    corridorMotors.move_velocity(rpm);
-    elevatorMotors.move_velocity(rpm);
-    judgeMotors.move_velocity(rpm);
-    scorerMotors.move_velocity(rpm);
+    moveIfPresent(corridorMotors, hasCorridorMotors, rpm);
+    moveIfPresent(elevatorMotors, hasElevatorMotors, rpm);
+    moveIfPresent(judgeMotors, hasJudgeMotors, rpm);
+    moveIfPresent(scorerMotors, hasScorerMotors, rpm);
 }
 
 void Intake::moveStorePath(int rpm) {
@@ -282,39 +324,58 @@ void Intake::moveStorePath(int rpm) {
 }
 
 void Intake::moveSmallStore(int rpm) {
-    corridorMotors.move_velocity(rpm);
-    elevatorMotors.move_velocity(rpm);
-    judgeMotors.move_velocity(rpm);
-    scorerMotors.move_velocity(0);
+    moveIfPresent(corridorMotors, hasCorridorMotors, rpm);
+    moveIfPresent(elevatorMotors, hasElevatorMotors, rpm);
+    moveIfPresent(judgeMotors, hasJudgeMotors, rpm);
+    moveIfPresent(scorerMotors, hasScorerMotors, 0);
 }
 
 void Intake::moveSmallReject(int rpm) {
-    corridorMotors.move_velocity(rpm);
-    elevatorMotors.move_velocity(rpm);
-    judgeMotors.move_velocity(-rpm);
-    scorerMotors.move_velocity(0);
+    moveIfPresent(corridorMotors, hasCorridorMotors, rpm);
+    moveIfPresent(elevatorMotors, hasElevatorMotors, rpm);
+    moveIfPresent(judgeMotors, hasJudgeMotors, -rpm);
+    moveIfPresent(scorerMotors, hasScorerMotors, 0);
 }
 
 void Intake::moveBigStore(int rpm) {
-    elevatorMotors.move_velocity(rpm);
-    judgeMotors.move_velocity(0);
+    moveIfPresent(elevatorMotors, hasElevatorMotors, rpm);
+    moveIfPresent(judgeMotors, hasJudgeMotors, 0);
 }
 
 void Intake::moveBigScore(IntakeScoreHeight height) {
     if (height == IntakeScoreHeight::Top) {
-        elevatorMotors.move_velocity(intakeVelocity);
-        judgeMotors.move_velocity(intakeVelocity);
+        moveIfPresent(elevatorMotors, hasElevatorMotors, intakeVelocity);
+        moveIfPresent(judgeMotors, hasJudgeMotors, intakeVelocity);
     } else if (height == IntakeScoreHeight::Middle) {
-        elevatorMotors.move_velocity(intakeVelocity);
-        judgeMotors.move_velocity(-intakeVelocity);
+        moveIfPresent(elevatorMotors, hasElevatorMotors, intakeVelocity);
+        moveIfPresent(judgeMotors, hasJudgeMotors, -intakeVelocity);
     } else {
-        elevatorMotors.move_velocity(-intakeVelocity);
-        judgeMotors.move_velocity(-intakeVelocity);
+        moveIfPresent(elevatorMotors, hasElevatorMotors, -intakeVelocity);
+        moveIfPresent(judgeMotors, hasJudgeMotors, -intakeVelocity);
     }
 }
 
 void Intake::setPiston(std::unique_ptr<pros::adi::DigitalOut>& piston, bool value) {
     if (piston) piston->set_value(value);
+}
+
+void Intake::moveIfPresent(pros::MotorGroup& motors, bool present, int rpm) {
+    if (present) motors.move_velocity(rpm);
+}
+
+void Intake::brakeIfPresent(pros::MotorGroup& motors, bool present) {
+    if (present) motors.brake();
+}
+
+void Intake::configureIfPresent(pros::MotorGroup& motors,
+                                bool present,
+                                pros::motor_brake_mode_e_t brakeMode) {
+    if (!present) return;
+
+    motors.set_brake_mode_all(brakeMode);
+    motors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
+    motors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
+    motors.tare_position_all();
 }
 
 bool Intake::objectDetected() {
@@ -330,6 +391,16 @@ bool Intake::seesRed() {
 bool Intake::seesBlue() {
     const double hue = opticalSensor.get_hue();
     return hue >= 170.0 && hue <= 230.0;
+}
+
+IntakeSortDecision Intake::sortDecisionFromOptical() {
+    const bool red = seesRed();
+    const bool blue = seesBlue();
+    if (!red && !blue) return IntakeSortDecision::None;
+
+    const bool allianceColor = (alliance == IntakeAlliance::Red && red) ||
+                               (alliance == IntakeAlliance::Blue && blue);
+    return allianceColor ? IntakeSortDecision::Accept : IntakeSortDecision::Reject;
 }
 
 } // namespace subsystems

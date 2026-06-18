@@ -18,6 +18,9 @@ static int joystickToVoltage(int input) {
 Drivetrain::Drivetrain(const config::RobotConfig& config, util::Logger& logger)
     : kind(config.drive.kind),
       logger(logger),
+      hasLeftMotors(config.ports.motors.leftDrive.size() > 0),
+      hasRightMotors(config.ports.motors.rightDrive.size() > 0),
+      hasCenterMotors(config.ports.motors.centerDrive.size() > 0),
       leftMotors(config.ports.motors.leftDrive),
       rightMotors(config.ports.motors.rightDrive),
       centerMotors(config.ports.motors.centerDrive),
@@ -60,6 +63,9 @@ Drivetrain::Drivetrain(const config::RobotConfig& config, util::Logger& logger)
 
 void Drivetrain::initialize() {
     logger.info(kind == config::DriveKind::HDrive ? "Calibrating H-drive odom" : "Calibrating LemLib chassis");
+    if (kind == config::DriveKind::HDrive) {
+        logger.warn("BigRobot driver strafe works; LemLib auton still ignores the center motor");
+    }
     lemlibChassis.calibrate();
     lemlibChassis.setPose(0, 0, 0); // Bench default; auton routines can reset pose before running.
 }
@@ -68,21 +74,21 @@ void Drivetrain::configureForMatch(bool opcontrol, double maxAccel) {
     const pros::motor_brake_mode_e_t brakeMode = opcontrol ? pros::E_MOTOR_BRAKE_BRAKE : pros::E_MOTOR_BRAKE_HOLD;
     configuredMaxAccel = maxAccel;
 
-    leftMotors.set_brake_mode_all(brakeMode);
-    rightMotors.set_brake_mode_all(brakeMode);
-    centerMotors.set_brake_mode_all(brakeMode);
+    if (hasLeftMotors) leftMotors.set_brake_mode_all(brakeMode);
+    if (hasRightMotors) rightMotors.set_brake_mode_all(brakeMode);
+    if (hasCenterMotors) centerMotors.set_brake_mode_all(brakeMode);
 
-    leftMotors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
-    rightMotors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
-    centerMotors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
+    if (hasLeftMotors) leftMotors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
+    if (hasRightMotors) rightMotors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
+    if (hasCenterMotors) centerMotors.set_gearing_all(pros::E_MOTOR_GEARSET_06);
 
-    leftMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
-    rightMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
-    centerMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
+    if (hasLeftMotors) leftMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
+    if (hasRightMotors) rightMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
+    if (hasCenterMotors) centerMotors.set_encoder_units_all(pros::E_MOTOR_ENCODER_DEGREES);
 
-    leftMotors.tare_position_all();
-    rightMotors.tare_position_all();
-    centerMotors.tare_position_all();
+    if (hasLeftMotors) leftMotors.tare_position_all();
+    if (hasRightMotors) rightMotors.tare_position_all();
+    if (hasCenterMotors) centerMotors.tare_position_all();
 
     lemlibChassis.setBrakeMode(brakeMode);
     logger.info(opcontrol ? "Drive brake mode: brake" : "Drive brake mode: hold");
@@ -91,9 +97,9 @@ void Drivetrain::configureForMatch(bool opcontrol, double maxAccel) {
 void Drivetrain::update() {}
 
 void Drivetrain::stop() {
-    leftMotors.brake();
-    rightMotors.brake();
-    centerMotors.brake();
+    if (hasLeftMotors) leftMotors.brake();
+    if (hasRightMotors) rightMotors.brake();
+    if (hasCenterMotors) centerMotors.brake();
 }
 
 void Drivetrain::debug() const {
@@ -253,6 +259,9 @@ void Drivetrain::followPath(const std::string& name,
                             bool forwards,
                             bool async) {
     logger.autonStep(name.c_str());
+    if (kind == config::DriveKind::HDrive) {
+        logger.warn("H-drive followPath uses LemLib left/right only; center strafe motor is ignored");
+    }
     lemlibChassis.follow(path, lookahead, timeout, forwards, async);
     if (!async) logger.pose("After follow", lemlibChassis.getPose());
 }
@@ -269,6 +278,10 @@ bool Drivetrain::isInMotion() const {
     return lemlibChassis.isInMotion();
 }
 
+bool Drivetrain::hasStrafeMotor() const {
+    return hasCenterMotors;
+}
+
 double Drivetrain::verticalTrackingInches() {
     return leftVerticalTrackingWheel.getDistanceTraveled();
 }
@@ -283,25 +296,31 @@ bool Drivetrain::imuReady() const {
 
 double Drivetrain::hottestDriveMotorCelsius() const {
     double hottest = 0.0;
-    for (double temperature : leftMotors.get_temperature_all()) {
-        if (temperature > hottest) hottest = temperature;
+    if (hasLeftMotors) {
+        for (double temperature : leftMotors.get_temperature_all()) {
+            if (temperature > hottest) hottest = temperature;
+        }
     }
-    for (double temperature : rightMotors.get_temperature_all()) {
-        if (temperature > hottest) hottest = temperature;
+    if (hasRightMotors) {
+        for (double temperature : rightMotors.get_temperature_all()) {
+            if (temperature > hottest) hottest = temperature;
+        }
     }
-    for (double temperature : centerMotors.get_temperature_all()) {
-        if (temperature > hottest) hottest = temperature;
+    if (hasCenterMotors) {
+        for (double temperature : centerMotors.get_temperature_all()) {
+            if (temperature > hottest) hottest = temperature;
+        }
     }
     return hottest;
 }
 
 void Drivetrain::setTankVoltage(int left, int right) {
-    leftMotors.move_voltage(left);
-    rightMotors.move_voltage(right);
+    if (hasLeftMotors) leftMotors.move_voltage(left);
+    if (hasRightMotors) rightMotors.move_voltage(right);
 }
 
 void Drivetrain::setStrafeVoltage(int strafe) {
-    centerMotors.move_voltage(strafe);
+    if (hasCenterMotors) centerMotors.move_voltage(strafe);
 }
 
 } // namespace subsystems

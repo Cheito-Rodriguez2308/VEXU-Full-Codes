@@ -162,14 +162,18 @@ void Robot::updateDashboard() {
                      hottestDriveMotor);
 
     pros::lcd::print(5,
-                     "Pin %s Cup %s",
+                     "Pin %s Cup %s All %s",
                      sensors.possession().hasPin ? "yes" : "no",
-                     sensors.possession().hasCup ? "yes" : "no");
+                     sensors.possession().hasCup ? "yes" : "no",
+                     subsystems::toString(intake.getAlliance()));
     pros::lcd::print(6,
                      "I:%s P:%s C:%s T:%s",
                      subsystems::toString(intake.getState()),
                      subsystems::toString(pin.getState()),
                      subsystems::toString(cup.getState()), subsystems::toString(toggle.getState()));
+    if (config.drive.kind == config::DriveKind::HDrive) {
+        pros::lcd::print(7, "H-drive auton: center strafe ignored");
+    }
 
     if (!drivetrain.imuReady()) {
         controller.set_text(0, 0, "IMU calibrating");

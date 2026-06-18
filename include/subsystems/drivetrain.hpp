@@ -80,6 +80,7 @@ class Drivetrain {
     void cancelMotion();
     void cancelAllMotions();
     bool isInMotion() const;
+    bool hasStrafeMotor() const;
 
     double verticalTrackingInches();
     double horizontalTrackingInches();
@@ -93,6 +94,9 @@ class Drivetrain {
     config::DriveKind kind;
     double configuredMaxAccel = 0.0;
     util::Logger& logger;
+    bool hasLeftMotors;
+    bool hasRightMotors;
+    bool hasCenterMotors;
     pros::MotorGroup leftMotors;
     pros::MotorGroup rightMotors;
     pros::MotorGroup centerMotors;

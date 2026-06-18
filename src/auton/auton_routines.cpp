@@ -8,6 +8,7 @@
 namespace auton {
 
 void redSafeAWP(AutonActions& actions) {
+    actions.setIntakeAlliance(subsystems::IntakeAlliance::Red);
     // Safer qual idea: leave line, grab one object, score without crossing traffic.
     // Still depends on preload not sliding during the first move.
     actions.driveToPoint("red safe leave line", 12.0, 6.0, 1500);
@@ -17,6 +18,7 @@ void redSafeAWP(AutonActions& actions) {
 }
 
 void blueSafeAWP(AutonActions& actions) {
+    actions.setIntakeAlliance(subsystems::IntakeAlliance::Blue);
     // Mirrored version. Check this separately; blue-side turns usually expose
     // tracking wheel sign mistakes faster than red.
     actions.driveToPoint("blue safe leave line", 12.0, -6.0, 1500);
@@ -25,6 +27,7 @@ void blueSafeAWP(AutonActions& actions) {
 }
 
 void redGoalStackPriority(AutonActions& actions) {
+    actions.setIntakeAlliance(subsystems::IntakeAlliance::Red);
     // Faster idea for when the goal-side stack is worth the risk.
     // Timing breaks if the cup mechanism hesitates.
     actions.driveToPose("red goal approach", 20.0, 20.0, 0.0, 2500, {.lead = 0.4});
@@ -32,18 +35,21 @@ void redGoalStackPriority(AutonActions& actions) {
 }
 
 void blueGoalStackPriority(AutonActions& actions) {
+    actions.setIntakeAlliance(subsystems::IntakeAlliance::Blue);
     // Keep separate from red until both robots have measured starts.
     actions.driveToPose("blue goal approach", 20.0, -20.0, 0.0, 2500, {.lead = 0.4});
     actions.approachAndScore();
 }
 
 void redMidfieldPressure(AutonActions& actions) {
+    actions.setIntakeAlliance(subsystems::IntakeAlliance::Red);
     // More aggressive. This should stay out of finals code until midfield traffic is mapped.
     actions.turnToPoint("face midfield", 48.0, 0.0, 1000);
     actions.chainAroundGoal();
 }
 
 void blueMidfieldPressure(AutonActions& actions) {
+    actions.setIntakeAlliance(subsystems::IntakeAlliance::Blue);
     // Probably needs a lower angular D if it snaps past the lane.
     actions.turnToHeading("blue midfield heading", -45.0, 1000);
     actions.chainAroundGoal();
@@ -106,6 +112,7 @@ static void aonBigPark(AutonActions& actions) {
 }
 
 void aonRedRoutine1(AutonActions& actions, config::RobotIdentity identity) {
+    actions.setIntakeAlliance(subsystems::IntakeAlliance::Red);
     if (identity == config::RobotIdentity::BigRobot) {
         aonBigMatchLoader(actions);
     } else {
@@ -114,6 +121,7 @@ void aonRedRoutine1(AutonActions& actions, config::RobotIdentity identity) {
 }
 
 void aonRedRoutine2(AutonActions& actions, config::RobotIdentity identity) {
+    actions.setIntakeAlliance(subsystems::IntakeAlliance::Red);
     if (identity == config::RobotIdentity::BigRobot) {
         aonBigPark(actions);
     } else {
@@ -122,11 +130,21 @@ void aonRedRoutine2(AutonActions& actions, config::RobotIdentity identity) {
 }
 
 void aonBlueRoutine1(AutonActions& actions, config::RobotIdentity identity) {
-    aonRedRoutine1(actions, identity);
+    actions.setIntakeAlliance(subsystems::IntakeAlliance::Blue);
+    if (identity == config::RobotIdentity::BigRobot) {
+        aonBigMatchLoader(actions);
+    } else {
+        aonSmallMatchLoader(actions);
+    }
 }
 
 void aonBlueRoutine2(AutonActions& actions, config::RobotIdentity identity) {
-    aonRedRoutine2(actions, identity);
+    actions.setIntakeAlliance(subsystems::IntakeAlliance::Blue);
+    if (identity == config::RobotIdentity::BigRobot) {
+        aonBigPark(actions);
+    } else {
+        aonSmallPark(actions);
+    }
 }
 
 void aonSkillsRoutine1(AutonActions& actions, config::RobotIdentity identity) {

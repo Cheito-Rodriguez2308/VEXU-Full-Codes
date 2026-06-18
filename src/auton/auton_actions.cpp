@@ -90,6 +90,11 @@ void AutonActions::setScoreHeight(subsystems::IntakeScoreHeight height) {
     intake.setScoreHeight(height);
 }
 
+void AutonActions::setIntakeAlliance(subsystems::IntakeAlliance alliance) {
+    logger.autonStep("setIntakeAlliance");
+    intake.setAlliance(alliance);
+}
+
 void AutonActions::startSortRelease() {
     logger.autonStep("startSortRelease");
     intake.startReleasing();
